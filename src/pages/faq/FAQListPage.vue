@@ -1,9 +1,8 @@
 <template>
   <div>
     <h2>FAQ List Page</h2>
-    <FAQListComponent></FAQListComponent>
+    <FAQListComponent />
   </div>
-
 </template>
 
 <script setup>
