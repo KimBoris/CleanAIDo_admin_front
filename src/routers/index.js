@@ -1,17 +1,16 @@
-import faqRouters from "./faq.js";
 import {createRouter, createWebHistory} from "vue-router";
+import faqRouters from "./faq.js";
 
 
 const MainPage = () => import("../pages/MainPage.vue");
 
-const routes = [
-    {path: '/', component: MainPage},
-    faqRouters
-]
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: routes
-})
+    routes: [
+        { path: '/', component: MainPage },
+        faqRouters,
+    ],
+});
 
 export default router;
