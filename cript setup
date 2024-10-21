@@ -1,0 +1,17 @@
+[33mcommit 32e90d3dff3091be4aef1b9b4269efa44dd6125c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mPSY[m[33m, [m[1;31morigin/dev[m[33m, [m[1;32mdev[m[33m)[m
+Author: shongCoder <soyeong163@gmail.com>
+Date:   Mon Oct 21 15:59:55 2024 +0900
+
+    PSY_faqApi.js : CRUD 메서드 정의
+
+[33mcommit d844eeb9d49150c02c352dede8cb1c11aa9c20a8[m[33m ([m[1;31morigin/PSY[m[33m, [m[1;32mmain[m[33m)[m
+Author: shongCoder <soyeong163@gmail.com>
+Date:   Mon Oct 21 15:07:03 2024 +0900
+
+    PSY_초기 설정
+
+[33mcommit 0286106ce48968b261a493d5943758204ce57da0[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/PHJ[m[33m, [m[1;31morigin/KTH[m[33m, [m[1;31morigin/KBK[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Hyeonjun Park <baghyeonjun16@gmail.com>
+Date:   Mon Oct 21 14:37:15 2024 +0900
+
+    PHJ_관리자 프론트 프로젝트 생성
