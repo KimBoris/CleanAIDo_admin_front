@@ -3,8 +3,8 @@
         <h3 @click="faq.open = !faq.open" class="faq-question" :class="{ 'open': faq.open }">
             {{ faq.question }}
         </h3>
-        <p>
-
+        <p v-if="faq.open" class="faq-answer">
+            {{ faq.answer }}
         </p>
 
     </div>
