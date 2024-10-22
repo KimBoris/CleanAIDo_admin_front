@@ -5,7 +5,8 @@ const host = "http://10.10.10.191:13306/api/v1/admin/faq";
 export const getFAQList = async (page, size) => {
     const res = await axios.get(`${host}/list`, {
         params: {
-            page: page,
+            page: page || 1,
+            size: size || 10,
         },
     });
 
@@ -28,10 +29,10 @@ export const deleteFAQOne = async (fno) => {
     const res = await axios.delete(`${host}/${fno}`);
 
     return res.data;
-}
+};
 
 export const putFAQOne = async (faqObj) => {
-    const res = await axios.put(`${host}/${faq.fno}`, faqObj);
+    const res = await axios.put(`${host}/${faqObj.fno}`, faqObj);
 
-    return res.data
-}
+    return res.data;
+};
