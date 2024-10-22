@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const host = "http://10.10.10.191:13306/api/v1/admin/faq";
+const host = "http://10.10.10.191:8080/api/v1/admin/faq";
 
 export const getFAQList = async (page, size) => {
     const res = await axios.get(`${host}/list`, {
         params: {
             page: page || 1,
-            size: size || 10,
+            size: size || 10
         },
     });
 

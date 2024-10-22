@@ -1,105 +1,142 @@
 <template>
   <div class="faq-list">
-    <!-- FAQ 항목 반복 렌더링 -->
-    <div class="faq-item" v-for="faq in serverData.value.content" :key="faq.fno">
-      <h2>
-        <!-- FAQ 항목 클릭 시 Read 페이지로 이동 -->
-        <RouterLink :to="`/faq/read/${faq.fno}`">{{ faq.question }}</RouterLink>
-      </h2>
+    <!-- 번호와 질문 제목을 표시하는 헤더 -->
+    <div class="faq-header">
+      <span class="faq-header-number">번호</span>
+      <span class="faq-header-question">질문</span>
+    </div>
+    <!-- FAQ 리스트 출력 -->
+    <div class="faq-item" v-for="faq in serverData.dtoList" :key="faq.fno">
+      <RouterLink :to="`/faq/read/${faq.fno}`">
+        <h2>{{ faq.fno }} {{ faq.question }}</h2>
+      </RouterLink>
     </div>
 
-    <!-- 페이지네이션 부분 -->
-    <div class="d-flex justify-content-center align-items-center" style="height: 100px;">
+    <!-- 페이지네이션 영역과 작성 버튼 -->
+    <div class="pagination-container d-flex justify-content-center align-items-center" style="height: 200px;">
       <ul class="pagination">
-        <li :class="`page-item ${page == faqData.number + 1 ? 'active' : ''}`" v-for="{ page, label } in pageNums" :key="page">
-          <a class="page-link" @click="handleClickPage(page)">{{ label }}</a>
+        <!-- 이전 버튼 -->
+        <li v-if="serverData.prev" class="page-item">
+          <a class="page-link" @click="handleClickPage(serverData.prevPage)">Prev</a>
+        </li>
+        <!-- 페이지 번호 리스트 -->
+        <li :class="`page-item ${page == serverData.current ? 'active' : ''}`" v-for="page in serverData.pageNumList" :key="page">
+          <a class="page-link" @click="handleClickPage(page)">{{ page }}</a>
+        </li>
+        <!-- 다음 버튼 -->
+        <li v-if="serverData.next" class="page-item">
+          <a class="page-link" @click="handleClickPage(serverData.nextPage)">Next</a>
         </li>
       </ul>
+      <!-- 작성 버튼 -->
+      <button @click="goToRegister" class="register-btn">작성</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted , ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getFAQList } from '../../apis/faqApi';
-import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 
 const serverData = ref({
-  content: [],  // FAQ 목록을 저장할 배열
-  number: 0,    // 현재 페이지 번호
-  size: 0,      // 한 페이지에 표시할 항목 수
-  totalPages: 0 // 전체 페이지 수
-})
+  dtoList: [], // FAQ 목록 데이터
+  pageNumList: [], // 페이지 번호 리스트
+  prev: false, // 이전 페이지 존재 여부
+  next: false, // 다음 페이지 존재 여부
+  prevPage: 0, // 이전 페이지 번호
+  nextPage: 0, // 다음 페이지 번호
+  totalCount: 0, // 전체 항목 수
+  totalPage: 0, // 전체 페이지 수
+  current: 1 // 현재 페이지 번호
+});
 
-const router = useRouter();
 const route = useRoute();
+const router = useRouter();
 
-// 페이지 클릭 핸들러
+// FAQ 작성 페이지로 이동하는 함수
+const goToRegister = () => {
+  router.push('/faq/register');
+};
+
+// FAQ 리스트 데이터를 가져오는 함수
+const fetchFAQs = async (page) => {
+  const data = await getFAQList(page);
+  serverData.value = data;
+};
+
+// 페이지 클릭 시 호출되는 함수
 const handleClickPage = (pageNum) => {
   const currentQueryPage = parseInt(route.query.page || 1);
-
-  console.log('handleClickPage ' + pageNum + " : " + route.query.page);
-
   if (currentQueryPage === pageNum) {
-    console.log("동일 페이지 클릭");
-
-    // 동일한 페이지를 클릭했을 때도 데이터를 갱신
-    getFAQList(pageNum).then(res => serverData.value = res);
+    fetchFAQs(pageNum); // 같은 페이지 클릭 시 데이터 다시 로드
   } else {
-    console.log("다른 페이지 클릭");
-    // 라우팅을 통해 페이지 번호 업데이트
-    router.push({ path: '/faq/list', query: { page: pageNum } });
+    router.push({ path: '/faq/list', query: { page: pageNum } }); // 다른 페이지 클릭 시 라우터 변경
   }
-}
+};
 
-// 페이지네이션 계산
-const pageNums = computed(() => {
-  const current = serverData.value.number + 1;
-
-  let lastPageNum = Math.ceil(current / 10.0) * 10;
-  const startPageNum = lastPageNum - 9;
-  const prev = startPageNum !== 1;
-  let next = true;
-
-  if (serverData.value.totalPages <= lastPageNum) {
-    lastPageNum = serverData.value.totalPages;
-    next = false;
-  }
-
-  const arr = [];
-  if (prev) {
-    arr.push({ page: startPageNum - 1, label: "Prev" });
-  }
-  for (let i = startPageNum; i <= lastPageNum; i++) {
-    arr.push({ page: i, label: i });
-  }
-  if (next) {
-    arr.push({ page: lastPageNum + 1, label: "Next" });
-  }
-  return arr;
-})
-
-// 컴포넌트가 마운트되었을 때 FAQ 목록을 불러옴
-onMounted(async () => {
+// 컴포넌트가 마운트되었을 때 FAQ 리스트를 가져옴
+onMounted(() => {
   const page = route.query.page || 1;
-  const result = await getFAQList(page);  // 서버에서 해당 페이지 FAQ 목록을 가져옴
-  serverData.value = result;
+  fetchFAQs(page);
+});
 
-  console.log(serverData.value);
-})
-
-// 라우터가 변경될 때마다 데이터를 갱신
+// 라우트 변경 시 FAQ 리스트를 다시 로드
 onBeforeRouteUpdate(async (to, from, next) => {
-  console.log('onBeforeRouteUpdate');
-
-  const result = await getFAQList(to.query.page);
-  serverData.value = result;
-
+  await fetchFAQs(to.query.page);
   next();
-})
-
+});
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.faq-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+  padding: 10px 0;
+}
+/* 페이지네이션 중앙 정렬 */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
 
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.page-item {
+  margin-right: 10px;
+}
+
+.page-item a {
+  text-decoration: none;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.page-item.active a {
+  font-weight: bold;
+  color: #000;
+}
+
+/* 작성 버튼 스타일 */
+.register-btn {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.register-btn:hover {
+  background-color: #0056b3;
+}
 </style>
