@@ -2,16 +2,17 @@ import axios from "axios";
 
 const host = "http://10.10.10.191:13306/api/v1/admin/faq";
 
-export const getFAQList = async (page, size) => {
+export const getFAQList = async (page, size = 10) => {
+    console.log(`${host}/list?page=${page}&size=${size}`);
     const res = await axios.get(`${host}/list`, {
         params: {
             page: page,
+            size: size
         },
     });
 
     return res.data;
 };
-
 export const getFAQOne = async (fno) => {
     const res = await axios.get(`${host}/${fno}`);
 
@@ -31,7 +32,7 @@ export const deleteFAQOne = async (fno) => {
 }
 
 export const putFAQOne = async (faqObj) => {
-    const res = await axios.put(`${host}/${faq.fno}`, faqObj);
+    const res = await axios.put(`${host}/${faqObj.fno}`, faqObj);
 
     return res.data
 }
