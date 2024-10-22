@@ -17,6 +17,7 @@ const faq = ref({
   answer: "",
 });
 
+// 완료 버튼 이벤트
 const handleClickComplate = async () => {
   await postFAQOne(faq.value);
   router.replace("/faq/list");
