@@ -6,7 +6,7 @@ export const getFAQList = async (page, size) => {
     const res = await axios.get(`${host}/list`, {
         params: {
             page: page || 1,
-            size: size || 10,
+            size: size || 10
         },
     });
 
