@@ -1,7 +1,7 @@
 <template>
   <div class="faq-list">
     <!-- FAQ 항목 반복 렌더링 -->
-    <div class="faq-item" v-for="faq in faqList" :key="faq.fno">
+    <div class="faq-item" v-for="faq in serverData.value.content" :key="faq.fno">
       <h2>
         <!-- FAQ 항목 클릭 시 Read 페이지로 이동 -->
         <RouterLink :to="`/faq/read/${faq.fno}`">{{ faq.question }}</RouterLink>
