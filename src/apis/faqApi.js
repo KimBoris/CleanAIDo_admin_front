@@ -3,7 +3,6 @@ import axios from "axios";
 const host = "http://10.10.10.191:13306/api/v1/admin/faq";
 
 export const getFAQList = async (page, size = 10) => {
-    console.log(`${host}/list?page=${page}&size=${size}`);
     const res = await axios.get(`${host}/list`, {
         params: {
             page: page,

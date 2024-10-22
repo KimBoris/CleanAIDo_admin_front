@@ -2,6 +2,7 @@
   <div>
     <h2>{{ faq.question }}</h2>
     <p>{{ faq.answer }}</p>
+    <RouterLink :to="`/faq/edit/${faq.fno}`" class="btn btn-info">수정</RouterLink>
     <RouterLink to="/faq/list" class="btn btn-info">뒤로가기</RouterLink>
   </div>
 </template>
