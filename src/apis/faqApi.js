@@ -31,7 +31,7 @@ export const deleteFAQOne = async (fno) => {
 }
 
 export const putFAQOne = async (faqObj) => {
-    const res = await axios.put(`${host}/${faq.fno}`, faqObj);
+    const res = await axios.put(`${host}/${faqObj.fno}`, faqObj);
 
     return res.data
 }
