@@ -9,6 +9,7 @@
 <script setup>
 import {useRouter} from "vue-router";
 import {ref} from "vue";
+import {postFAQOne} from "../../apis/faqApi.js";
 
 const router = useRouter();
 
@@ -19,8 +20,14 @@ const faq = ref({
 
 // 완료 버튼 이벤트
 const handleClickComplate = async () => {
-  await postFAQOne(faq.value);
-  router.replace("/faq/list");
+  try {
+    await postFAQOne(faq.value);
+    router.replace("/faq/list");
+  } catch (error) {
+    const errorMessage = error.response.data.message;
+    console.log(errorMessage);
+  }
+
 };
 
 </script>

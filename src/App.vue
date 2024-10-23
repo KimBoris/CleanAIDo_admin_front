@@ -5,7 +5,7 @@
     <!-- Container -->
     <div class="container-fluid page-body-wrapper">
       <!-- SideBar -->
-      <SideBar class="w-100" />
+      <SideBar />
       <!-- Contents -->
       <Contents />
       <!-- main-panel ends -->
