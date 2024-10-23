@@ -4,9 +4,9 @@
     <table>
       <thead>
         <tr>
-          <th>번호</th>
           <th>질문</th>
           <th>글쓴이</th>
+          <th>답변 여부</th>
         </tr>
       </thead>
       <tbody>
@@ -14,6 +14,8 @@
           <td>{{ qna.qno }}</td>
           <td><RouterLink :to="`/qna/${qna.qno}`">{{ qna.title }}</RouterLink></td>
           <td>{{ qna.writer }}</td>
+          <td v-if="qna.answered">답변 완료</td>
+          <td v-if="!qna.answered">답변 미완료</td>
         </tr>
       </tbody>
     </table>
