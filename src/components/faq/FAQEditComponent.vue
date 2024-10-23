@@ -44,8 +44,7 @@ const handleClickComplate = () => {
 };
 
 onMounted(() => {
-  console.log("fno: " + fno);
-  // 예외 처리
+  console.log("fno: " + fno); // 이 부분에서 fno 값이 제대로 나오는지 확인
   getFAQOne(fno)
       .then((data) => (faq.value = data))
       .catch((err) => {
