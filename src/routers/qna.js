@@ -9,7 +9,7 @@ const qnaRouters = {
     children: [
         { path: "", redirect: '/qna/list' },
         { path: "list", component: QNAListPage },
-        { path: "read/:qno", component: QNAReadPage },
+        { path: ":qno", component: QNAReadPage },
     ],
 };
 

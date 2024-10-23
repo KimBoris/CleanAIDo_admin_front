@@ -9,6 +9,7 @@
 <script setup>
 import {useRouter} from "vue-router";
 import {ref} from "vue";
+import {postFAQOne} from "../../apis/faqApi.js";
 
 const router = useRouter();
 

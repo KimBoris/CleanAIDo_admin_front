@@ -1,37 +1,46 @@
 <template>
   <div class="faq-list">
-    <!-- 번호와 질문 제목을 표시하는 헤더 -->
-    <div class="faq-header">
-      <span class="faq-header-number">번호</span>
-      <span class="faq-header-question">질문</span>
-    </div>
-    <!-- FAQ 리스트 출력 -->
-    <div class="faq-item" v-for="faq in serverData.dtoList" :key="faq.fno">
-      <RouterLink :to="`/faq/read/${faq.fno}`">
-        <h2>{{ faq.fno }} {{ faq.question }}</h2>
-      </RouterLink>
-    </div>
+    <table>
+      <!-- 테이블 헤더 -->
+      <thead>
+      <tr>
+        <th>번호</th>
+        <th>질문</th>
+      </tr>
+      </thead>
+      <!-- 테이블 바디 (FAQ 리스트 출력) -->
+      <tbody>
+      <tr v-for="faq in faqList.dtoList" :key="faq.fno">
+        <td>{{ faq.fno }}</td>
+        <td>
+          <RouterLink :to="`/faq/read/${faq.fno}`">
+            {{ faq.question }}
+          </RouterLink>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
     <!-- 페이지네이션 영역과 작성 버튼 -->
     <div class="pagination-container d-flex justify-content-center align-items-center" style="height: 200px;">
       <ul class="pagination">
         <!-- 이전 버튼 -->
-        <li v-if="serverData.prev" class="page-item">
-          <a class="page-link" @click="handleClickPage(serverData.prevPage)">Prev</a>
+        <li v-if="faqList.prev" class="page-item">
+          <a class="page-link" @click="handleClickPage(faqList.prevPage)">Prev</a>
         </li>
         <!-- 페이지 번호 리스트 -->
-        <li :class="`page-item ${page == serverData.current ? 'active' : ''}`" v-for="page in serverData.pageNumList" :key="page">
+        <li :class="`page-item ${page == faqList.current ? 'active' : ''}`" v-for="page in faqList.pageNumList" :key="page">
           <a class="page-link" @click="handleClickPage(page)">{{ page }}</a>
         </li>
         <!-- 다음 버튼 -->
-        <li v-if="serverData.next" class="page-item">
-          <a class="page-link" @click="handleClickPage(serverData.nextPage)">Next</a>
+        <li v-if="faqList.next" class="page-item">
+          <a class="page-link" @click="handleClickPage(faqList.nextPage)">Next</a>
         </li>
       </ul>
       <!-- 작성 버튼 -->
       <button @click="goToRegister" class="register-btn">작성</button>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -39,7 +48,7 @@ import { ref, onMounted } from 'vue';
 import { getFAQList } from '../../apis/faqApi';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 
-const serverData = ref({
+const faqList = ref({
   dtoList: [], // FAQ 목록 데이터
   pageNumList: [], // 페이지 번호 리스트
   prev: false, // 이전 페이지 존재 여부
@@ -62,7 +71,8 @@ const goToRegister = () => {
 // FAQ 리스트 데이터를 가져오는 함수
 const fetchFAQs = async (page) => {
   const data = await getFAQList(page);
-  serverData.value = data;
+  console.log("Fetched FAQ List:", data);
+  faqList.value = data;
 };
 
 // 페이지 클릭 시 호출되는 함수
@@ -89,12 +99,20 @@ onBeforeRouteUpdate(async (to, from, next) => {
 </script>
 
 <style scoped>
-.faq-header {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  border-bottom: 2px solid #000;
-  padding: 10px 0;
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f5f5f5;
 }
 /* 페이지네이션 중앙 정렬 */
 .pagination-container {
