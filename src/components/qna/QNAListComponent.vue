@@ -3,48 +3,79 @@
   <div>
     <table>
       <thead>
-        <tr>
-          <th>번호</th>
-          <th>질문</th>
-          <th>글쓴이</th>
-        </tr>
+      <tr>
+        <th>번호</th>
+        <th>질문</th>
+        <th>글쓴이</th>
+        <th>답변 여부</th>
+      </tr>
       </thead>
       <tbody>
-        <tr v-for="qna in qnaList.dtoList" :key="qna.qno">
-          <td>{{ qna.qno }}</td>
-          <td><RouterLink :to="`/qna/${qna.qno}`">{{ qna.title }}</RouterLink></td>
-          <td>{{ qna.writer }}</td>
-        </tr>
+      <tr v-for="qna in qnaList.dtoList" :key="qna.qno">
+        <td>{{ qna.qno }}</td>
+        <td><button @click="openModal(qna.qno, qna.answered)">{{ qna.title }}</button></td>
+        <td>{{ qna.writer }}</td>
+        <td>{{ qna.answered ? '완료' : '미완료' }}</td>
+      </tr>
       </tbody>
     </table>
   </div>
 
-  <!--  페이지네이션  -->
+  <!-- 페이지네이션 -->
   <div>
     <button v-if="qnaList.prev" @click="handleClickPage(qnaList.prevPage)">이전</button>
-    <button v-for="page in qnaList.pageNumList" :key="page"
-            @click="handleClickPage(page)"
-    >
+    <button v-for="page in qnaList.pageNumList" :key="page" @click="handleClickPage(page)">
       {{ page }}
     </button>
     <button v-if="qnaList.next" @click="handleClickPage(qnaList.nextPage)">다음</button>
   </div>
+
+  <!-- 답변 완료된 질문 수정용 모달 -->
+  <div v-if="isEditModalOpen" class="modal">
+    <div class="modal-content">
+      <h2>{{ selectedQna.title }} (수정 모드)</h2>
+      <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>
+      <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>
+
+      <!-- 답변 수정 -->
+      <div>
+        <label for="answer"><strong>답변 수정:</strong></label>
+        <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 수정하세요"></textarea>
+        <button @click="submitAnswer(true)">수정</button>
+      </div>
+
+      <button @click="closeModal">닫기</button>
+    </div>
+  </div>
+
+  <!-- 답변 없는 질문용 모달 -->
+  <div v-if="isModalOpen" class="modal">
+    <div class="modal-content">
+      <h2>{{ selectedQna.title }}</h2>
+      <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>
+      <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>
+
+      <!-- 답변 작성 -->
+      <div>
+        <label for="answer"><strong>답변 작성:</strong></label>
+        <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 입력하세요"></textarea>
+        <button @click="submitAnswer(false)">완료</button>
+      </div>
+
+      <button @click="closeModal">닫기</button>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import {onMounted, ref, watch} from "vue";
-import {getQNAList} from "../../apis/qnaApi.js";
-import {onBeforeRouteUpdate, useRoute, useRouter} from "vue-router";
+import { ref, onMounted } from 'vue';
+import { getQNAList, getQNAOne, postQNAAnswer, putQNAAnswer } from '../../apis/qnaApi.js';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
 
-// 로딩
-const loading = ref(false);
-const refresh = ref(false);
-
-const selectedPage = ref(1);
-
+// 리스트 데이터 관리
 const qnaList = ref({
   dtoList: [],
   pageNumList: [],
@@ -54,34 +85,113 @@ const qnaList = ref({
   },
 });
 
-// 데이터 가져옴
-const fetchQNAList  = async (page) => {
-  loading.value = true;
-  const data = await getQNAList(page);
+// 모달 관련 상태 관리
+const isModalOpen = ref(false); // 모달 상태
+const isEditModalOpen = ref(false); // 수정 모달 상태
+const selectedQna = ref(null);  // 선택된 질문
+const answerContent = ref('');  // 입력된 답변
+
+// 페이지 데이터 가져오기
+const fetchQNAList = async (page) => {
+  const data = await getQNAList(page || 1);
   qnaList.value = data;
-  loading.value = false;
 };
 
-// 페이지네이션 클릭 시 이벤트
+// 페이지네이션 클릭 시 이벤트 처리
 const handleClickPage = (pageNum) => {
-  selectedPage.value = pageNum;
   router.push({ query: { page: pageNum } });
+  fetchQNAList(pageNum);
 };
 
+// 모달 열기 (질문 데이터 가져오기)
+const openModal = async (qno, answered) => {
+  try {
+    const qnaData = await getQNAOne(qno); // 서버에서 질문/답변 데이터를 받아옴
+    selectedQna.value = qnaData; // 받아온 질문 데이터를 모달에 적용
+    answerContent.value = qnaData.answertext || ''; // 기존 답변이 있으면 표시, 없으면 빈 값
+
+    if (answered) {
+      isEditModalOpen.value = true; // 수정 모달 열기
+    } else {
+      isModalOpen.value = true; // 답변 모달 열기
+    }
+  } catch (error) {
+    console.error('Failed to fetch QnA data:', error);
+  }
+};
+
+// 모달 닫기
+const closeModal = () => {
+  isModalOpen.value = false;
+  isEditModalOpen.value = false;
+  selectedQna.value = null;
+  answerContent.value = '';
+};
+
+// 완료 또는 수정 버튼 이벤트 (답변 등록 또는 수정)
+const submitAnswer = async (isEditing) => {
+  if (selectedQna.value) {
+    const answerData = {
+      qno: selectedQna.value.qno,
+      answerText: answerContent.value,
+    };
+
+    try {
+      if (isEditing) {
+        // 수정인 경우
+        await putQNAAnswer(answerData);
+      } else {
+        // 신규 답변인 경우
+        await postQNAAnswer(answerData);
+      }
+
+      // dtoList에서 해당 QnA 항목을 찾아서 answertext 업데이트
+      const updatedItem = qnaList.value.dtoList.find(item => item.qno === selectedQna.value.qno);
+      if (updatedItem) {
+        updatedItem.answertext = answerContent.value;  // answertext 필드를 업데이트
+        updatedItem.answered = true; // 답변 완료 상태로 변경
+      }
+
+      closeModal(); // 답변 완료 후 모달 닫기
+    } catch (error) {
+      console.error('Failed to submit the answer:', error);
+    }
+  }
+};
+
+// 컴포넌트가 마운트될 때 리스트 가져오기
 onMounted(() => {
   fetchQNAList(route.query.page || 1);
-});
-
-watch(refresh, () => {
-  fetchQNAList(route.query.page || 1);
-});
-
-onBeforeRouteUpdate((to, from, next) => {
-  fetchQNAList(to.query.page || 1);
-  next();
 });
 </script>
 
 <style scoped>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.modal-content {
+  background: white;
+  padding: 30px;
+  width: 600px;
+  border-radius: 8px;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
 </style>

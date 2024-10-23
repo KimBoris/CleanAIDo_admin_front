@@ -21,6 +21,30 @@ export const getQNAOne = async (qno) => {
 
 // 답변 등록 (POST)
 export const postQNAAnswer = async (answerData) => {
-    const res = await axios.post(`${host}/${answerData.qno}?answerText=${encodeURIComponent(answerData.answerText)}`);
+    const formData = new FormData();
+    formData.append('answerText', answerData.answerText);
+
+    // axios POST 요청 시 formData 전송
+    const res = await axios.post(`${host}/${answerData.qno}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+
+    return res.data;
+};
+
+// 답변 수정 (PUT)
+export const putQNAAnswer = async (answerData) => {
+    const formData = new FormData();
+    formData.append('answerText', answerData.answerText);
+
+    // axios PUT 요청 시 formData 전송
+    const res = await axios.put(`${host}/${answerData.qno}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+
     return res.data;
 };
