@@ -21,7 +21,6 @@ export const getFAQOne = async (fno) => {
 
 export const postFAQOne = async (faqObj) => {
     const res = await axios.post(`${host}`, faqObj);
-
     return res.data;
 };
 
