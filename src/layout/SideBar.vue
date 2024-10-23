@@ -99,19 +99,6 @@
 
 <script setup>
 
-// import { onMounted } from 'vue';
-//
-// function toggleCollapse(id) {
-//   const target = document.getElementById(id);
-//   const bsCollapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target);
-//
-//   // Toggle the collapse state
-//   bsCollapse.toggle();
-// }
-//
-// onMounted(() => {
-//   // You can initialize any required functionality here
-// });
 
 </script>
 
