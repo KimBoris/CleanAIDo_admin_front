@@ -19,6 +19,12 @@ export const getQNAOne = async (qno) => {
     return res.data;
 };
 
+export const postQNAAnswer = async (answer) => {
+    const res = await axios.post(`${host}`, answer);
+
+    return res.data;
+};
+
 export const putQNAAnswer = async (ansObj) => {
     const res = await axios.put(`${host}/${ansObj.ano}`, ansObj);
 
