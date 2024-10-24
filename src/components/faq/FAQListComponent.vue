@@ -13,6 +13,11 @@
       <Share />
     </div>
   </div>
+  <!-- 검색창 -->
+  <div>
+    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요" />
+    <button @click="handleSearch">검색</button>
+  </div>
   <div class="faq-list">
     <table>
       <!-- 테이블 헤더 -->
@@ -77,6 +82,7 @@ const faqList = ref({
 
 const route = useRoute();
 const router = useRouter();
+const keyword = ref('');
 
 // FAQ 작성 페이지로 이동하는 함수
 const goToRegister = () => {
@@ -84,8 +90,9 @@ const goToRegister = () => {
 };
 
 // FAQ 리스트 데이터를 가져오는 함수
-const fetchFAQs = async (page) => {
-  const data = await getFAQList(page);
+const fetchFAQs = async (page, keyword ='') => {
+  console.log(keyword+"-------")
+  const data = await getFAQList(page,10, keyword);
   console.log("Fetched FAQ List:", data);
   faqList.value = data;
 };
@@ -94,23 +101,29 @@ const fetchFAQs = async (page) => {
 const handleClickPage = (pageNum) => {
   const currentQueryPage = parseInt(route.query.page || 1);
   if (currentQueryPage === pageNum) {
-    fetchFAQs(pageNum); // 같은 페이지 클릭 시 데이터 다시 로드
+    fetchFAQs(pageNum,keyword.value); // 같은 페이지 클릭 시 데이터 다시 로드
   } else {
-    router.push({ path: '/faq/list', query: { page: pageNum } }); // 다른 페이지 클릭 시 라우터 변경
+    router.push({ path: '/faq/list', query: { page: pageNum, keyword:keyword.value } }); // 다른 페이지 클릭 시 라우터 변경
   }
 };
 
 // 컴포넌트가 마운트되었을 때 FAQ 리스트를 가져옴
 onMounted(() => {
   const page = route.query.page || 1;
-  fetchFAQs(page);
+  keyword.value = route.query.keyword || '';
+  fetchFAQs(page, keyword.value);
 });
 
 // 라우트 변경 시 FAQ 리스트를 다시 로드
 onBeforeRouteUpdate(async (to, from, next) => {
-  await fetchFAQs(to.query.page);
+  keyword.value = to.query.keyword || '';
+  await fetchFAQs(to.query.page || 1, keyword.value);
   next();
 });
+
+const handleSearch = () => {
+  router.push({ path: '/faq/list', query: { page: 1, keyword: keyword.value } });
+};
 </script>
 
 <style scoped>
