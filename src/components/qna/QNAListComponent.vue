@@ -1,33 +1,62 @@
 <template>
-  <!-- 리스트 -->
-  <div>
-    <table>
-      <thead>
-      <tr>
-        <th>번호</th>
-        <th>질문</th>
-        <th>글쓴이</th>
-        <th>답변 여부</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="qna in qnaList.dtoList" :key="qna.qno">
-        <td>{{ qna.qno }}</td>
-        <td><button @click="openModal(qna.qno, qna.answered)">{{ qna.title }}</button></td>
-        <td>{{ qna.writer }}</td>
-        <td>{{ qna.answered ? '완료' : '미완료' }}</td>
-      </tr>
-      </tbody>
-    </table>
+  <!-- 탭 메뉴 -->
+  <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
+    <div class="ms-auto">
+      <Share />
+    </div>
   </div>
 
-  <!-- 페이지네이션 -->
-  <div>
-    <button v-if="qnaList.prev" @click="handleClickPage(qnaList.prevPage)">이전</button>
-    <button v-for="page in qnaList.pageNumList" :key="page" @click="handleClickPage(page)">
-      {{ page }}
-    </button>
-    <button v-if="qnaList.next" @click="handleClickPage(qnaList.nextPage)">다음</button>
+  <!-- 리스트 -->
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title"></h4>
+      <p class="card-description">
+      </p>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th style="width: 15%;">번호</th>
+            <th style="width: 50%;">제목</th>
+            <th style="width: 20%;">글쓴이</th>
+            <th style="width: 15%;">답변여부</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="qna in qnaList.dtoList" :key="qna.qno" class="pe-auto">
+            <td>{{ qna.qno }}</td>
+            <td class="cursor-pointer" @click="openModal(qna.qno, qna.answered)">{{ qna.title }}</td>
+            <td>{{ qna.writer }}</td>
+            <td>
+              <label :class="qna.answered ? 'badge badge-success' : 'badge badge-dark'">
+                {{ qna.answered ? '답변완료' : '미완료' }}
+              </label>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <!-- 페이지네이션 -->
+        <div class="d-flex justify-content-center mt-5">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button
+                type="button"
+                class="btn btn-outline-secondary py-3 px-3"
+                v-if="qnaList.prev" @click="handleClickPage(qnaList.prevPage)"
+            >이전</button>
+            <button
+                type="button"
+                class="btn btn-outline-secondary py-3 px-3"
+                v-for="page in qnaList.pageNumList" :key="page" @click="handleClickPage(page)"
+            >{{ page }}</button>
+            <button
+                type="button"
+                class="btn btn-outline-secondary py-3 px-3"
+                v-if="qnaList.next" @click="handleClickPage(qnaList.nextPage)"
+            >다음</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 답변 완료된 질문 수정용 모달 -->
@@ -71,6 +100,7 @@
 import { ref, onMounted } from 'vue';
 import { getQNAList, getQNAOne, postQNAAnswer, putQNAAnswer } from '../../apis/qnaApi.js';
 import { useRoute, useRouter } from 'vue-router';
+import Share from "../../layout/Share.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -193,5 +223,13 @@ textarea {
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 16px;
+}
+
+td {
+  padding: 1em;
+}
+
+button {
+  margin: 0 !important;
 }
 </style>
