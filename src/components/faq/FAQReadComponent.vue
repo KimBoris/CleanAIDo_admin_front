@@ -1,28 +1,47 @@
 <template>
   <div>
-    <!-- delFlag가 false일 때만 question과 answer를 표시 -->
-    <div v-if="!faq.delFlag">
-      <h2>{{ faq.question }}</h2>
-      <p>{{ faq.answer }}</p>
+    <div>
+      <!-- 뒤로가기 버튼 -->
+      <RouterLink to="/faq/list" class="btn btn-info">뒤로가기</RouterLink>
+      <!-- 버튼 그룹 -->
+      <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
 
-      <!-- 수정하기 버튼 -->
-      <RouterLink :to="`/faq/edit/${faq.fno}`" class="btn btn-info">수정하기</RouterLink>
+        <div class="ms-auto">
+          <Share/>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div v-if="!faq.delFlag">
+            <h3 class="card-title">{{ faq.question }}</h3>
+            <div class="content">
+              <p class="card-text"> {{ faq.answer }} </p>
+              <!-- delFlag가 false일 때만 question과 answer를 표시 -->
+            </div>
+            <div class="button-group">
+              <!-- 수정하기 버튼 -->
+              <RouterLink :to="`/faq/edit/${faq.fno}`" class="btn btn-primary me-2 py-3 px-4 fs-6 color text-light">수정하기
+              </RouterLink>
+            </div>
+          </div>
+          <div v-else>
+            <p>삭제된 페이지 입니다.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- delFlag가 true일 때 삭제된 페이지 메시지 표시 -->
+
     </div>
-
-    <!-- delFlag가 true일 때 삭제된 페이지 메시지 표시 -->
-    <div v-else>
-      <p>삭제된 페이지입니다</p>
-    </div>
-
-    <!-- 뒤로가기 버튼 -->
-    <RouterLink to="/faq/list" class="btn btn-info">뒤로가기</RouterLink>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { getFAQOne } from "../../apis/faqApi";
+import {ref, onMounted} from "vue";
+import {useRoute} from "vue-router";
+import {getFAQOne} from "../../apis/faqApi";
+import Share from "../../layout/Share.vue";
 
 const route = useRoute();
 const faq = ref({});
@@ -45,4 +64,22 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+.content {
+  margin-bottom: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+
+.btn {
+  margin-top: 5px;
+}
 </style>

@@ -10,7 +10,7 @@ const faqRouters = {
     meta: { title: "자주 묻는 질문" },
     children: [
         {path: "", redirect: '/faq/list'},
-        {path: "list", component: FAQListPage },
+        {path: "list", component: FAQListPage, meta:{back: "none"} },
         {path: "register", component: FAQRegisterPage },
         {path: "read/:fno", component: FAQReadPage },
         {path: "edit/:fno", component: FAQEditPage }
