@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>QNA Read Page</h2>
     <QNAReadComponent />
   </div>
 </template>

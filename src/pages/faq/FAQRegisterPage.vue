@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>FAQ Register Page</h1>
     <FAQRegisterComponent />
   </div>
 </template>
