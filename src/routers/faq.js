@@ -7,7 +7,7 @@ const FAQEditPage = () => import("../pages/faq/FAQEditPage.vue");
 const faqRouters = {
     path: "/faq",
     component: IndexPage,
-    meta: { title: "자주 묻는 질문" },
+    meta: { title: "자주 묻는 질문(FAQ)" },
     children: [
         {path: "", redirect: '/faq/list'},
         {path: "list", component: FAQListPage },
