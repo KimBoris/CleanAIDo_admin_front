@@ -16,15 +16,13 @@
         <table class="table table-hover">
           <thead>
           <tr>
-            <th style="width: 15%;">번호</th>
-            <th style="width: 50%;">제목</th>
-            <th style="width: 20%;">글쓴이</th>
-            <th style="width: 15%;">답변여부</th>
+            <th style="width: 60%;">제목</th>
+            <th style="width: 30%;">글쓴이</th>
+            <th style="width: 10%;">답변여부</th>
           </tr>
           </thead>
           <tbody>
           <tr v-for="qna in qnaList.dtoList" :key="qna.qno" class="pe-auto">
-            <td>{{ qna.qno }}</td>
             <td class="cursor-pointer" @click="openModal(qna.qno, qna.answered)">{{ qna.title }}</td>
             <td>{{ qna.writer }}</td>
             <td>
