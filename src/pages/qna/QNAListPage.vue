@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>QNA List Page</h2>
     <QNAListComponent />
   </div>
 </template>

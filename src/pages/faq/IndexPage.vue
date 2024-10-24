@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>FAQ Index Page</h1>
+    <h3 class="mb-4 fw-semibold">{{ $route.meta.title }}</h3>
     <RouterView />
   </div>
 

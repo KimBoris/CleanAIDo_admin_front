@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>FAQ Read Page</h2>
     <FAQReadComponent />
   </div>
 
