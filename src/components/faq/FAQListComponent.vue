@@ -188,12 +188,4 @@ th {
 .register-btn:hover {
   background-color: #0056b3;
 }
-
-td {
-  padding: 1em;
-}
-
-button {
-  margin: 0 !important;
-}
 </style>

@@ -10,8 +10,8 @@ export const getQNAList = async (page, size, type='', keyword='') => {
     };
     if(keyword){
         if(type){
-            params.searchType = type;
             params.keyword = keyword;
+            params.searchType = type;
         }
     }
     const res = await axios.get(`${host}/list`, { params });

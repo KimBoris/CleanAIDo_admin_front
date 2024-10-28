@@ -143,8 +143,6 @@ const fetchQNAList = async (page, type='', keyword='') => {
 
 // 페이지네이션 클릭 시 이벤트 처리
 const handleClickPage = (pageNum) => {
-  searchData.value.type = route.query.searchType || '';
-  searchData.value.keyword = route.query.keyword || '';
   router.push({ query: { page: pageNum, searchType : searchData.value.type, keyword: searchData.value.keyword } });
   fetchQNAList(pageNum, searchData.value.type, searchData.value.keyword);
 };
@@ -205,7 +203,6 @@ const submitAnswer = async (isEditing) => {
 };
 
 // 컴포넌트가 마운트될 때 리스트 가져오기
-// 컴포넌트가 마운트될 때 리스트 가져오기
 onMounted(() => {
   searchData.value.type = route.query.searchType || '';
   searchData.value.keyword = route.query.keyword || '';
@@ -215,7 +212,8 @@ onMounted(() => {
 const handleSearch = () => {
   searchData.value.type = selectedOption.value;
   searchData.value.keyword = keyword.value;
-  router.push({ path: '/qna/list', query: { page: 1, searchType: searchData.value.type, keyword: searchData.value.keyword } });
+  router.push({ path: '/qna/list', query: { page: 1, searchType: searchData.value.type, keyword: searchData.value.keyword} });
+  fetchQNAList(1, searchData.value.type, searchData.value.keyword);
 };
 </script>
 
