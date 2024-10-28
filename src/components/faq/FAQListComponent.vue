@@ -18,48 +18,52 @@
     <input type="text" v-model="keyword" placeholder="검색어를 입력하세요" />
     <button @click="handleSearch">검색</button>
   </div>
-  <div class="faq-list">
-    <table>
-      <!-- 테이블 헤더 -->
-      <thead>
-      <tr>
-        <th>번호</th>
-        <th>질문</th>
-      </tr>
-      </thead>
-      <!-- 테이블 바디 (FAQ 리스트 출력) -->
-      <tbody>
-      <tr v-for="faq in faqList.dtoList" :key="faq.fno">
-        <td>{{ faq.fno }}</td>
-        <td>
-          <RouterLink :to="`/faq/read/${faq.fno}`">
-            {{ faq.question }}
-          </RouterLink>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
 
-    <!-- 페이지네이션 영역과 작성 버튼 -->
-    <div class="pagination-container d-flex justify-content-center align-items-center" style="height: 200px;">
-      <ul class="pagination">
-        <!-- 이전 버튼 -->
-        <li v-if="faqList.prev" class="page-item">
-          <a class="page-link" @click="handleClickPage(faqList.prevPage)">Prev</a>
-        </li>
-        <!-- 페이지 번호 리스트 -->
-        <li :class="`page-item ${page == faqList.current ? 'active' : ''}`" v-for="page in faqList.pageNumList" :key="page">
-          <a class="page-link" @click="handleClickPage(page)">{{ page }}</a>
-        </li>
-        <!-- 다음 버튼 -->
-        <li v-if="faqList.next" class="page-item">
-          <a class="page-link" @click="handleClickPage(faqList.nextPage)">Next</a>
-        </li>
-      </ul>
-      <!-- 작성 버튼 -->
-      <button @click="goToRegister" class="register-btn">작성</button>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title"></h4>
+      <p class="card-description">
+      </p>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>질문</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="faq in faqList.dtoList" :key="faq.fno" class="pe-auto">
+            <td>
+              <RouterLink :to="`/faq/read/${faq.fno}`" class="text-decoration-none text-dark">
+              {{ faq.question }}
+            </RouterLink>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <!-- 페이지네이션 -->
+        <div class="d-flex justify-content-center mt-5">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button
+                type="button"
+                class="btn btn-outline-secondary py-3 px-3"
+                v-if="faqList.prev" @click="handleClickPage(faqList.prevPage)"
+            >이전</button>
+            <button
+                type="button"
+                class="btn btn-outline-secondary py-3 px-3"
+                v-for="page in faqList.pageNumList" :key="page" @click="handleClickPage(page)"
+            >{{ page }}</button>
+            <button
+                type="button"
+                class="btn btn-outline-secondary py-3 px-3"
+                v-if="faqList.next" @click="handleClickPage(faqList.nextPage)"
+            >다음</button>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -183,5 +187,13 @@ th {
 
 .register-btn:hover {
   background-color: #0056b3;
+}
+
+td {
+  padding: 1em;
+}
+
+button {
+  margin: 0 !important;
 }
 </style>
