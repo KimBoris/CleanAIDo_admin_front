@@ -23,8 +23,12 @@ export const getFAQOne = async (fno) => {
     return res.data;
 };
 
-export const postFAQOne = async (faqObj) => {
-    const res = await axios.post(`${host}`, faqObj);
+export const postFAQOne = async (formData) => {
+    const res = await axios.post(`${host}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
     return res.data;
 };
 

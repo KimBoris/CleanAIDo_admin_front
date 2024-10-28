@@ -27,6 +27,12 @@
             />
           </div>
         </div>
+      <div class="form-group row">
+        <label for="file" class="col-sm-3 col-form-label">첨부파일</label>
+        <div class="col-sm-9">
+          <input type="file" @change="handleFileUpload" multiple class="form-control" id="file" />
+        </div>
+      </div>
       <div class="d-flex justify-content-end mt-3">
         <button class="btn btn-light py-3 px-4 fs-6">
           <RouterLink to="/faq/list" class="text-decoration-none text-blue">취소</RouterLink>
@@ -52,10 +58,26 @@ const faq = ref({
   answer: "",
 });
 
+const files = ref({});
+
 const error = ref(null);
+
+const handleClickUpload = (event) => {
+  files.value = Array.from(event.target.files); // 파일을 배열로 저장
+}
 
 // 완료 버튼 이벤트
 const handleClickComplate = async () => {
+
+  const formData = new FormData();
+  formData.append("question", faq.value.question);
+  formData.append("answer", faq.value.answer);
+
+  // 파일들을 FormData에 추가
+  files.value.forEach((file, index) => {
+    formData.append(`files[${index}]`, file);
+  });
+
   try {
     await postFAQOne(faq.value).then((result) => {
       console.log(result)
