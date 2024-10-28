@@ -2,7 +2,7 @@
   <!-- 탭 메뉴 -->
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
     <div class="ms-auto">
-      <Share />
+      <Share/>
     </div>
   </div>
   <!-- 검색창 -->
@@ -12,7 +12,7 @@
       <option value="titleContents">제목+내용</option>
       <option value="writer">작성자</option>
     </select>
-    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요" />
+    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
     <button @click="handleSearch">검색</button>
   </div>
   <div>
@@ -55,17 +55,20 @@
                     type="button"
                     class="btn btn-outline-secondary py-3 px-3"
                     v-if="qnaList.prev" @click="handleClickPage(qnaList.prevPage)"
-                >이전</button>
+                >이전
+                </button>
                 <button
                     type="button"
                     class="btn btn-outline-secondary py-3 px-3"
                     v-for="page in qnaList.pageNumList" :key="page" @click="handleClickPage(page)"
-                >{{ page }}</button>
+                >{{ page }}
+                </button>
                 <button
                     type="button"
                     class="btn btn-outline-secondary py-3 px-3"
                     v-if="qnaList.next" @click="handleClickPage(qnaList.nextPage)"
-                >다음</button>
+                >다음
+                </button>
               </div>
             </div>
           </div>
@@ -77,60 +80,70 @@
   <!-- 답변 완료된 질문 수정용 모달 -->
   <div v-if="isEditModalOpen" class="modal">
     <div class="modal-content">
+      <button class="btn btn-close close-button" @click="closeModal"></button>
       <div>
         <div v-if="isLoading" class="flex items-center justify-center h-screen">
           <!--로딩창-->
           <LoadingComponent></LoadingComponent>
         </div>
         <div v-else>
-          <h2>{{ selectedQna.title }} (수정 모드)</h2>
-          <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>
-          <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>
-
+          <div class="qna-info">
+            <h4><strong>{{ selectedQna.title }} (수정 모드)</strong></h4>
+          </div>
+          <div class="qna-info">
+            <hr>
+            <p><strong>작성자</strong>
+              <div class="qna-contents">{{ selectedQna.writer }}</div>
+            </p>
+            <p><strong>문의 내용</strong>
+              <div class="qna-contents">{{ selectedQna.contents }}</div>
+            </p>
+          </div>
           <!-- 답변 수정 -->
           <div>
             <label for="answer"><strong>답변 수정:</strong></label>
             <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 수정하세요"></textarea>
-            <button @click="submitAnswer(true)">수정</button>
+            <div class="text-end">
+              <button class="fs-6 text-white btn btn-primary" @click="submitAnswer(true)">수정</button>
+            </div>
           </div>
-          <button @click="closeModal">닫기</button>
         </div>
       </div>
 
     </div>
   </div>
   <!-- 답변 없는 질문용 모달 -->
-  <div v-if="isModalOpen" class="modal">
-    <div>
-      <div v-if="isLoading" class="flex items-center justify-center h-screen">
-        <!--로딩창-->
-        <LoadingComponent></LoadingComponent>
-      </div>
-      <div v-else>
-        <div class="modal-content">
-          <h2>{{ selectedQna.title }}</h2>
-          <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>
-          <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>
+  <!--  <div v-if="isModalOpen" class="modal">-->
+  <!--    <div>-->
+  <!--      <div v-if="isLoading" class="flex items-center justify-center h-screen">-->
+  <!--        &lt;!&ndash;로딩창&ndash;&gt;-->
+  <!--        <LoadingComponent></LoadingComponent>-->
+  <!--      </div>-->
+  <!--      <div v-else>-->
+  <!--        <div class="modal-content">-->
+  <!--          <h2>{{ selectedQna.title }}</h2>-->
+  <!--          <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>-->
+  <!--          <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>-->
 
-          <!-- 답변 작성 -->
-          <div>
-            <label for="answer"><strong>답변 작성:</strong></label>
-            <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 입력하세요"></textarea>
-            <button @click="submitAnswer(false)">완료</button>
-          </div>
+  <!--          &lt;!&ndash; 답변 작성 &ndash;&gt;-->
+  <!--          <div>-->
+  <!--            <label for="answer"><strong>답변 작성:</strong></label>-->
+  <!--            <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 입력하세요"></textarea>-->
+  <!--            <button @click="submitAnswer(false)">완료</button>-->
+  <!--          </div>-->
 
-          <button @click="closeModal">닫기</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!--          <button @click="closeModal">닫기</button>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
 
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { getQNAList, getQNAOne, postQNAAnswer, putQNAAnswer } from '../../apis/qnaApi.js';
-import { useRoute, useRouter } from 'vue-router';
+import {ref, onMounted} from 'vue';
+import {getQNAList, getQNAOne, postQNAAnswer, putQNAAnswer} from '../../apis/qnaApi.js';
+import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
 import LoadingComponent from "../common/LoadingComponent.vue";
 
@@ -158,20 +171,20 @@ const isLoading = ref(true);
 
 const searchData = ref({
   type: '',
-  keyword:''
+  keyword: ''
 });
 
 // 페이지 데이터 가져오기
-const fetchQNAList = async (page, type='', keyword='') => {
+const fetchQNAList = async (page, type = '', keyword = '') => {
   isLoading.value = true; // 로딩 시작
-  const data = await getQNAList(page || 1,10,type,keyword);
+  const data = await getQNAList(page || 1, 10, type, keyword);
   qnaList.value = data;
   isLoading.value = false;
 };
 
 // 페이지네이션 클릭 시 이벤트 처리
 const handleClickPage = (pageNum) => {
-  router.push({ query: { page: pageNum, searchType : searchData.value.type, keyword: searchData.value.keyword } });
+  router.push({query: {page: pageNum, searchType: searchData.value.type, keyword: searchData.value.keyword}});
   fetchQNAList(pageNum, searchData.value.type, searchData.value.keyword);
 };
 // 모달 열기 (질문 데이터 가져오기)
@@ -189,8 +202,7 @@ const openModal = async (qno, answered) => {
     }
   } catch (error) {
     console.error('Failed to fetch QnA data:', error);
-  }
-  finally {
+  } finally {
     isLoading.value = false;
   }
 };
@@ -244,7 +256,10 @@ onMounted(() => {
 const handleSearch = () => {
   searchData.value.type = selectedOption.value;
   searchData.value.keyword = keyword.value;
-  router.push({ path: '/qna/list', query: { page: 1, searchType: searchData.value.type, keyword: searchData.value.keyword} });
+  router.push({
+    path: '/qna/list',
+    query: {page: 1, searchType: searchData.value.type, keyword: searchData.value.keyword}
+  });
   fetchQNAList(1, searchData.value.type, searchData.value.keyword);
 };
 </script>
@@ -263,6 +278,7 @@ const handleSearch = () => {
 }
 
 .modal-content {
+  position: relative;
   background: white;
   padding: 30px;
   width: 600px;
@@ -285,6 +301,84 @@ td {
 
 button {
   margin: 0 !important;
+}
+
+.close-button {
+  position: absolute;
+  top: 35px;
+  right: 35px;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+
+.qna-modal-content {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.qna-info {
+
+  margin-bottom: 20px;
+}
+
+.qna-info p {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 25px;
+  margin-bottom: 20px;
+}
+
+
+.qna-info strong {
+  color: #222;
+}
+
+.qna-contents {
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  color: #333;
+  margin-top: 8px;
+}
+
+.qna-edit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.qna-edit textarea {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.qna-edit button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 </style>
