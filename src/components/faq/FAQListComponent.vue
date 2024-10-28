@@ -15,10 +15,6 @@
   </div>
   <!-- 검색창 -->
   <div>
-    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요" />
-    <button @click="handleSearch">검색</button>
-  </div>
-  <div>
     <div v-if="isLoading" class="flex items-center justify-center h-screen">
       <!--로딩창-->
       <LoadingComponent></LoadingComponent>
@@ -30,6 +26,17 @@
         <h4 class="card-title"></h4>
         <p class="card-description">
         </p>
+        <!-- 검색창 -->
+        <div class="form-group d-flex justify-content-end">
+          <div class="input-group w-auto">
+            <input type="text" v-model="keyword" class="form-control px-2 py-1" placeholder="질문 검색" style="height: 36px;"/>
+            <div class="input-group-append">
+              <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
