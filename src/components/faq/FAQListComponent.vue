@@ -1,14 +1,14 @@
 <template>
   <!-- 탭 메뉴 -->
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
-<!--    <ul class="nav nav-tabs" role="tablist">-->
-<!--      <li class="nav-item">-->
-<!--        <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">사용중</a>-->
-<!--      </li>-->
-<!--      <li class="nav-item">-->
-<!--        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false">휴지통</a>-->
-<!--      </li>-->
-<!--    </ul>-->
+    <!--    <ul class="nav nav-tabs" role="tablist">-->
+    <!--      <li class="nav-item">-->
+    <!--        <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">사용중</a>-->
+    <!--      </li>-->
+    <!--      <li class="nav-item">-->
+    <!--        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false">휴지통</a>-->
+    <!--      </li>-->
+    <!--    </ul>-->
     <div class="ms-auto">
       <Share />
     </div>
@@ -71,8 +71,6 @@
       </div>
     </div></div>
   </div>
-
-
 </template>
 
 <script setup>
@@ -144,34 +142,6 @@ const handleSearch = () => {
 
 <style scoped>
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: left;
-}
-
-th {
-  background-color: #f5f5f5;
-}
-/* 페이지네이션 중앙 정렬 */
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.pagination {
-  display: flex;
-  list-style: none;
-  padding: 0;
-}
 
 .page-item {
   margin-right: 10px;
@@ -200,5 +170,13 @@ th {
 
 .register-btn:hover {
   background-color: #0056b3;
+}
+
+td {
+  padding: 1em;
+}
+
+button {
+  margin: 0 !important;
 }
 </style>
