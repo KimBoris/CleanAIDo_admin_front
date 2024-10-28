@@ -5,7 +5,16 @@
       <Share />
     </div>
   </div>
-
+  <!-- 검색창 -->
+  <div>
+    <select v-model="selectedOption">
+      <option>------</option>
+      <option value="titleContents">제목+내용</option>
+      <option value="writer">작성자</option>
+    </select>
+    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요" />
+    <button @click="handleSearch">검색</button>
+  </div>
   <!-- 리스트 -->
   <div class="card">
     <div class="card-body">
@@ -120,19 +129,27 @@ const isModalOpen = ref(false); // 모달 상태
 const isEditModalOpen = ref(false); // 수정 모달 상태
 const selectedQna = ref(null);  // 선택된 질문
 const answerContent = ref('');  // 입력된 답변
+const selectedOption = ref('');
+const keyword = ref('');
+
+const searchData = ref({
+  type: '',
+  keyword:''
+});
 
 // 페이지 데이터 가져오기
-const fetchQNAList = async (page) => {
-  const data = await getQNAList(page || 1);
+const fetchQNAList = async (page, type='', keyword='') => {
+  const data = await getQNAList(page || 1,10,type,keyword);
   qnaList.value = data;
 };
 
 // 페이지네이션 클릭 시 이벤트 처리
 const handleClickPage = (pageNum) => {
-  router.push({ query: { page: pageNum } });
-  fetchQNAList(pageNum);
+  searchData.value.type = route.query.searchType || '';
+  searchData.value.keyword = route.query.keyword || '';
+  router.push({ query: { page: pageNum, searchType : searchData.value.type, keyword: searchData.value.keyword } });
+  fetchQNAList(pageNum, searchData.value.type, searchData.value.keyword);
 };
-
 // 모달 열기 (질문 데이터 가져오기)
 const openModal = async (qno, answered) => {
   try {
@@ -190,9 +207,18 @@ const submitAnswer = async (isEditing) => {
 };
 
 // 컴포넌트가 마운트될 때 리스트 가져오기
+// 컴포넌트가 마운트될 때 리스트 가져오기
 onMounted(() => {
-  fetchQNAList(route.query.page || 1);
+  searchData.value.type = route.query.searchType || '';
+  searchData.value.keyword = route.query.keyword || '';
+  fetchQNAList(route.query.page || 1, searchData.value.type, searchData.value.keyword);
 });
+
+const handleSearch = () => {
+  searchData.value.type = selectedOption.value;
+  searchData.value.keyword = keyword.value;
+  router.push({ path: '/qna/list', query: { page: 1, searchType: searchData.value.type, keyword: searchData.value.keyword } });
+};
 </script>
 
 <style scoped>

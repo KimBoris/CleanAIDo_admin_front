@@ -91,7 +91,6 @@ const goToRegister = () => {
 
 // FAQ 리스트 데이터를 가져오는 함수
 const fetchFAQs = async (page, keyword ='') => {
-  console.log(keyword+"-------")
   const data = await getFAQList(page,10, keyword);
   console.log("Fetched FAQ List:", data);
   faqList.value = data;
@@ -101,7 +100,7 @@ const fetchFAQs = async (page, keyword ='') => {
 const handleClickPage = (pageNum) => {
   const currentQueryPage = parseInt(route.query.page || 1);
   if (currentQueryPage === pageNum) {
-    fetchFAQs(pageNum,keyword.value); // 같은 페이지 클릭 시 데이터 다시 로드
+    fetchFAQs(pageNum,keyword.value ||''); // 같은 페이지 클릭 시 데이터 다시 로드
   } else {
     router.push({ path: '/faq/list', query: { page: pageNum, keyword:keyword.value } }); // 다른 페이지 클릭 시 라우터 변경
   }
