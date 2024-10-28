@@ -1,29 +1,35 @@
 <template>
   <!-- 탭 메뉴 -->
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
-<!--    <ul class="nav nav-tabs" role="tablist">-->
-<!--      <li class="nav-item">-->
-<!--        <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">사용중</a>-->
-<!--      </li>-->
-<!--      <li class="nav-item">-->
-<!--        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false">휴지통</a>-->
-<!--      </li>-->
-<!--    </ul>-->
+    <!--    <ul class="nav nav-tabs" role="tablist">-->
+    <!--      <li class="nav-item">-->
+    <!--        <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">사용중</a>-->
+    <!--      </li>-->
+    <!--      <li class="nav-item">-->
+    <!--        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false">휴지통</a>-->
+    <!--      </li>-->
+    <!--    </ul>-->
     <div class="ms-auto">
       <Share />
     </div>
   </div>
-  <!-- 검색창 -->
-  <div>
-    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요" />
-    <button @click="handleSearch">검색</button>
-  </div>
 
   <div class="card">
-    <div class="card-body">
+    <div class="card-body" style="padding: 3em;">
       <h4 class="card-title"></h4>
       <p class="card-description">
       </p>
+      <!-- 검색창 -->
+      <div class="form-group d-flex justify-content-end">
+        <div class="input-group w-auto">
+          <input type="text" v-model="keyword" class="form-control px-2 py-1" placeholder="질문 검색" style="height: 36px;"/>
+          <div class="input-group-append">
+            <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
@@ -35,8 +41,8 @@
           <tr v-for="faq in faqList.dtoList" :key="faq.fno" class="pe-auto">
             <td>
               <RouterLink :to="`/faq/read/${faq.fno}`" class="text-decoration-none text-dark">
-              {{ faq.question }}
-            </RouterLink>
+                {{ faq.question }}
+              </RouterLink>
             </td>
           </tr>
           </tbody>
@@ -94,7 +100,8 @@ const goToRegister = () => {
 };
 
 // FAQ 리스트 데이터를 가져오는 함수
-const fetchFAQs = async (page, keyword ='') => {
+const fetchQNAList = async (page, keyword ='') => {
+  console.log(keyword+"-------")
   const data = await getFAQList(page,10, keyword);
   console.log("Fetched FAQ List:", data);
   faqList.value = data;
@@ -102,25 +109,21 @@ const fetchFAQs = async (page, keyword ='') => {
 
 // 페이지 클릭 시 호출되는 함수
 const handleClickPage = (pageNum) => {
-  const currentQueryPage = parseInt(route.query.page || 1);
-  if (currentQueryPage === pageNum) {
-    fetchFAQs(pageNum,keyword.value ||''); // 같은 페이지 클릭 시 데이터 다시 로드
-  } else {
-    router.push({ path: '/faq/list', query: { page: pageNum, keyword:keyword.value } }); // 다른 페이지 클릭 시 라우터 변경
-  }
+  router.push({ query: { page: pageNum } });
+  fetchQNAList(pageNum);
 };
 
 // 컴포넌트가 마운트되었을 때 FAQ 리스트를 가져옴
 onMounted(() => {
   const page = route.query.page || 1;
   keyword.value = route.query.keyword || '';
-  fetchFAQs(page, keyword.value);
+  fetchQNAList(page, keyword.value);
 });
 
 // 라우트 변경 시 FAQ 리스트를 다시 로드
 onBeforeRouteUpdate(async (to, from, next) => {
   keyword.value = to.query.keyword || '';
-  await fetchFAQs(to.query.page || 1, keyword.value);
+  await fetchQNAList(to.query.page || 1, keyword.value);
   next();
 });
 
@@ -131,34 +134,6 @@ const handleSearch = () => {
 
 <style scoped>
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: left;
-}
-
-th {
-  background-color: #f5f5f5;
-}
-/* 페이지네이션 중앙 정렬 */
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.pagination {
-  display: flex;
-  list-style: none;
-  padding: 0;
-}
 
 .page-item {
   margin-right: 10px;
@@ -187,5 +162,13 @@ th {
 
 .register-btn:hover {
   background-color: #0056b3;
+}
+
+td {
+  padding: 1em;
+}
+
+button {
+  margin: 0 !important;
 }
 </style>
