@@ -8,58 +8,66 @@
   <!-- 검색창 -->
   <div>
     <select v-model="selectedOption">
-      <option>------</option>
+      <option value="" disabled>------</option>
       <option value="titleContents">제목+내용</option>
       <option value="writer">작성자</option>
     </select>
     <input type="text" v-model="keyword" placeholder="검색어를 입력하세요" />
     <button @click="handleSearch">검색</button>
   </div>
-  <!-- 리스트 -->
-  <div class="card">
-    <div class="card-body">
-      <h4 class="card-title"></h4>
-      <p class="card-description">
-      </p>
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th style="width: 60%;">제목</th>
-            <th style="width: 30%;">글쓴이</th>
-            <th style="width: 10%;">답변여부</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="qna in qnaList.dtoList" :key="qna.qno" class="pe-auto">
-            <td class="cursor-pointer" @click="openModal(qna.qno, qna.answered)">{{ qna.title }}</td>
-            <td>{{ qna.writer }}</td>
-            <td>
-              <label :class="qna.answered ? 'badge badge-success' : 'badge badge-dark'">
-                {{ qna.answered ? '답변완료' : '미완료' }}
-              </label>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <!-- 페이지네이션 -->
-        <div class="d-flex justify-content-center mt-5">
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <button
-                type="button"
-                class="btn btn-outline-secondary py-3 px-3"
-                v-if="qnaList.prev" @click="handleClickPage(qnaList.prevPage)"
-            >이전</button>
-            <button
-                type="button"
-                class="btn btn-outline-secondary py-3 px-3"
-                v-for="page in qnaList.pageNumList" :key="page" @click="handleClickPage(page)"
-            >{{ page }}</button>
-            <button
-                type="button"
-                class="btn btn-outline-secondary py-3 px-3"
-                v-if="qnaList.next" @click="handleClickPage(qnaList.nextPage)"
-            >다음</button>
+  <div>
+    <div v-if="isLoading" class="flex items-center justify-center h-screen">
+      <!--로딩창-->
+      <LoadingComponent></LoadingComponent>
+    </div>
+    <div v-else>
+      <!-- 리스트 -->
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title"></h4>
+          <p class="card-description">
+          </p>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th style="width: 60%;">제목</th>
+                <th style="width: 30%;">글쓴이</th>
+                <th style="width: 10%;">답변여부</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="qna in qnaList.dtoList" :key="qna.qno" class="pe-auto">
+                <td class="cursor-pointer" @click="openModal(qna.qno, qna.answered)">{{ qna.title }}</td>
+                <td>{{ qna.writer }}</td>
+                <td>
+                  <label :class="qna.answered ? 'badge badge-success' : 'badge badge-dark'">
+                    {{ qna.answered ? '답변완료' : '미완료' }}
+                  </label>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <!-- 페이지네이션 -->
+            <div class="d-flex justify-content-center mt-5">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-if="qnaList.prev" @click="handleClickPage(qnaList.prevPage)"
+                >이전</button>
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-for="page in qnaList.pageNumList" :key="page" @click="handleClickPage(page)"
+                >{{ page }}</button>
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-if="qnaList.next" @click="handleClickPage(qnaList.nextPage)"
+                >다음</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -69,38 +77,54 @@
   <!-- 답변 완료된 질문 수정용 모달 -->
   <div v-if="isEditModalOpen" class="modal">
     <div class="modal-content">
-      <h2>{{ selectedQna.title }} (수정 모드)</h2>
-      <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>
-      <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>
-
-      <!-- 답변 수정 -->
       <div>
-        <label for="answer"><strong>답변 수정:</strong></label>
-        <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 수정하세요"></textarea>
-        <button @click="submitAnswer(true)">수정</button>
+        <div v-if="isLoading" class="flex items-center justify-center h-screen">
+          <!--로딩창-->
+          <LoadingComponent></LoadingComponent>
+        </div>
+        <div v-else>
+          <h2>{{ selectedQna.title }} (수정 모드)</h2>
+          <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>
+          <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>
+
+          <!-- 답변 수정 -->
+          <div>
+            <label for="answer"><strong>답변 수정:</strong></label>
+            <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 수정하세요"></textarea>
+            <button @click="submitAnswer(true)">수정</button>
+          </div>
+          <button @click="closeModal">닫기</button>
+        </div>
       </div>
 
-      <button @click="closeModal">닫기</button>
     </div>
   </div>
-
   <!-- 답변 없는 질문용 모달 -->
   <div v-if="isModalOpen" class="modal">
-    <div class="modal-content">
-      <h2>{{ selectedQna.title }}</h2>
-      <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>
-      <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>
-
-      <!-- 답변 작성 -->
-      <div>
-        <label for="answer"><strong>답변 작성:</strong></label>
-        <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 입력하세요"></textarea>
-        <button @click="submitAnswer(false)">완료</button>
+    <div>
+      <div v-if="isLoading" class="flex items-center justify-center h-screen">
+        <!--로딩창-->
+        <LoadingComponent></LoadingComponent>
       </div>
+      <div v-else>
+        <div class="modal-content">
+          <h2>{{ selectedQna.title }}</h2>
+          <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>
+          <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>
 
-      <button @click="closeModal">닫기</button>
+          <!-- 답변 작성 -->
+          <div>
+            <label for="answer"><strong>답변 작성:</strong></label>
+            <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 입력하세요"></textarea>
+            <button @click="submitAnswer(false)">완료</button>
+          </div>
+
+          <button @click="closeModal">닫기</button>
+        </div>
+      </div>
     </div>
   </div>
+
 </template>
 
 <script setup>
@@ -108,6 +132,7 @@ import { ref, onMounted } from 'vue';
 import { getQNAList, getQNAOne, postQNAAnswer, putQNAAnswer } from '../../apis/qnaApi.js';
 import { useRoute, useRouter } from 'vue-router';
 import Share from "../../layout/Share.vue";
+import LoadingComponent from "../common/LoadingComponent.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -129,6 +154,7 @@ const selectedQna = ref(null);  // 선택된 질문
 const answerContent = ref('');  // 입력된 답변
 const selectedOption = ref('');
 const keyword = ref('');
+const isLoading = ref(true);
 
 const searchData = ref({
   type: '',
@@ -137,8 +163,10 @@ const searchData = ref({
 
 // 페이지 데이터 가져오기
 const fetchQNAList = async (page, type='', keyword='') => {
+  isLoading.value = true; // 로딩 시작
   const data = await getQNAList(page || 1,10,type,keyword);
   qnaList.value = data;
+  isLoading.value = false;
 };
 
 // 페이지네이션 클릭 시 이벤트 처리
@@ -149,6 +177,7 @@ const handleClickPage = (pageNum) => {
 // 모달 열기 (질문 데이터 가져오기)
 const openModal = async (qno, answered) => {
   try {
+    isLoading.value = true;
     const qnaData = await getQNAOne(qno); // 서버에서 질문/답변 데이터를 받아옴
     selectedQna.value = qnaData; // 받아온 질문 데이터를 모달에 적용
     answerContent.value = qnaData.answertext || ''; // 기존 답변이 있으면 표시, 없으면 빈 값
@@ -160,6 +189,9 @@ const openModal = async (qno, answered) => {
     }
   } catch (error) {
     console.error('Failed to fetch QnA data:', error);
+  }
+  finally {
+    isLoading.value = false;
   }
 };
 
@@ -254,4 +286,5 @@ td {
 button {
   margin: 0 !important;
 }
+
 </style>

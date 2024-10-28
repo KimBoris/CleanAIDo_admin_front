@@ -18,52 +18,61 @@
     <input type="text" v-model="keyword" placeholder="검색어를 입력하세요" />
     <button @click="handleSearch">검색</button>
   </div>
-
-  <div class="card">
-    <div class="card-body">
-      <h4 class="card-title"></h4>
-      <p class="card-description">
-      </p>
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th>질문</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="faq in faqList.dtoList" :key="faq.fno" class="pe-auto">
-            <td>
-              <RouterLink :to="`/faq/read/${faq.fno}`" class="text-decoration-none text-dark">
-              {{ faq.question }}
-            </RouterLink>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <!-- 페이지네이션 -->
-        <div class="d-flex justify-content-center mt-5">
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <button
-                type="button"
-                class="btn btn-outline-secondary py-3 px-3"
-                v-if="faqList.prev" @click="handleClickPage(faqList.prevPage)"
-            >이전</button>
-            <button
-                type="button"
-                class="btn btn-outline-secondary py-3 px-3"
-                v-for="page in faqList.pageNumList" :key="page" @click="handleClickPage(page)"
-            >{{ page }}</button>
-            <button
-                type="button"
-                class="btn btn-outline-secondary py-3 px-3"
-                v-if="faqList.next" @click="handleClickPage(faqList.nextPage)"
-            >다음</button>
+  <div>
+    <div v-if="isLoading" class="flex items-center justify-center h-screen">
+      <!--로딩창-->
+      <LoadingComponent></LoadingComponent>
+    </div>
+    <div v-else>
+      <!--  리스트-->
+      <div class="card">
+      <div class="card-body">
+        <h4 class="card-title"></h4>
+        <p class="card-description">
+        </p>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th>질문</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="faq in faqList.dtoList" :key="faq.fno" class="pe-auto">
+              <td>
+                <RouterLink :to="`/faq/read/${faq.fno}`" class="text-decoration-none text-dark">
+                  {{ faq.question }}
+                </RouterLink>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <!-- 페이지네이션 -->
+          <div class="d-flex justify-content-center mt-5">
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button
+                  type="button"
+                  class="btn btn-outline-secondary py-3 px-3"
+                  v-if="faqList.prev" @click="handleClickPage(faqList.prevPage)"
+              >이전</button>
+              <button
+                  type="button"
+                  class="btn btn-outline-secondary py-3 px-3"
+                  v-for="page in faqList.pageNumList" :key="page" @click="handleClickPage(page)"
+              >{{ page }}</button>
+              <button
+                  type="button"
+                  class="btn btn-outline-secondary py-3 px-3"
+                  v-if="faqList.next" @click="handleClickPage(faqList.nextPage)"
+              >다음</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </div></div>
   </div>
+
+
 </template>
 
 <script setup>
@@ -71,6 +80,7 @@ import { ref, onMounted } from 'vue';
 import { getFAQList } from '../../apis/faqApi';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import Share from "../../layout/Share.vue";
+import LoadingComponent from "../common/LoadingComponent.vue";
 
 const faqList = ref({
   dtoList: [], // FAQ 목록 데이터
@@ -87,6 +97,7 @@ const faqList = ref({
 const route = useRoute();
 const router = useRouter();
 const keyword = ref('');
+const isLoading = ref(true);
 
 // FAQ 작성 페이지로 이동하는 함수
 const goToRegister = () => {
@@ -95,9 +106,11 @@ const goToRegister = () => {
 
 // FAQ 리스트 데이터를 가져오는 함수
 const fetchFAQs = async (page, keyword ='') => {
+  isLoading.value = true;
   const data = await getFAQList(page,10, keyword);
   console.log("Fetched FAQ List:", data);
   faqList.value = data;
+  isLoading.value = false;
 };
 
 // 페이지 클릭 시 호출되는 함수
