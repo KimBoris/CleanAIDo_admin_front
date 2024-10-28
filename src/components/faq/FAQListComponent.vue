@@ -59,6 +59,7 @@
                 class="btn btn-outline-secondary py-3 px-3"
                 v-if="faqList.next" @click="handleClickPage(faqList.nextPage)"
             >다음</button>
+            <button type="button" class="btn btn-outline-secondary py-3 px-3" @click="goToRegister">등록</button>
           </div>
         </div>
       </div>
