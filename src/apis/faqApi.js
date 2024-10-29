@@ -37,8 +37,7 @@ export const deleteFAQOne = async (fno) => {
     return res.data;
 };
 
-export const putFAQOne = async (faqObj) => {
-    const res = await axios.put(`${host}/${faqObj.fno}`, faqObj);
-
+export const putFAQOneWithFiles = async (fno, formData) => {
+    const res = await axios.put(`${host}/${fno}`, formData);
     return res.data;
 };

@@ -113,10 +113,8 @@
         </div>
       </div>
 
-      <button @click="closeModal">닫기</button>
     </div>
   </div>
-
   <!-- 답변 없는 질문용 모달 -->
   <div v-if="isModalOpen" class="modal">
     <div class="modal-content">
@@ -149,10 +147,9 @@
           </div>
         </div>
       </div>
-
-      <button @click="closeModal">닫기</button>
     </div>
   </div>
+
 </template>
 
 <script setup>
@@ -160,6 +157,7 @@ import {ref, onMounted} from 'vue';
 import {getQNAList, getQNAOne, postQNAAnswer, putQNAAnswer} from '../../apis/qnaApi.js';
 import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
+import LoadingComponent from "../common/LoadingComponent.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -181,6 +179,7 @@ const selectedQna = ref(null);  // 선택된 질문
 const answerContent = ref('');  // 입력된 답변
 const selectedOption = ref('');
 const keyword = ref('');
+const isLoading = ref(true);
 
 const searchData = ref({
   type: '',
@@ -192,6 +191,7 @@ const fetchQNAList = async (page, type = '', keyword = '') => {
   isLoading.value = true; // 로딩 시작
   const data = await getQNAList(page || 1, 10, type, keyword);
   qnaList.value = data;
+  isLoading.value = false;
 };
 
 // 페이지네이션 클릭 시 이벤트 처리
