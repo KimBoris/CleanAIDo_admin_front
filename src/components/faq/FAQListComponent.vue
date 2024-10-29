@@ -65,7 +65,6 @@
                 class="btn btn-outline-secondary py-3 px-3"
                 v-if="faqList.next" @click="handleClickPage(faqList.nextPage)"
             >다음</button>
-            <button type="button" class="btn btn-outline-secondary py-3 px-3" @click="goToRegister">등록</button>
           </div>
         </div>
       </div>
@@ -101,8 +100,8 @@ const goToRegister = () => {
 };
 
 // FAQ 리스트 데이터를 가져오는 함수
-const fetchQNAList = async (page, keyword ='') => {
-  console.log(keyword+"-------")
+const fetchFAQs = async (page, keyword ='') => {
+  isLoading.value = true;
   const data = await getFAQList(page,10, keyword);
   console.log("Fetched FAQ List:", data);
   faqList.value = data;
@@ -110,21 +109,25 @@ const fetchQNAList = async (page, keyword ='') => {
 
 // 페이지 클릭 시 호출되는 함수
 const handleClickPage = (pageNum) => {
-  router.push({ query: { page: pageNum } });
-  fetchQNAList(pageNum);
+  const currentQueryPage = parseInt(route.query.page || 1);
+  if (currentQueryPage === pageNum) {
+    fetchFAQs(pageNum,keyword.value ||''); // 같은 페이지 클릭 시 데이터 다시 로드
+  } else {
+    router.push({ path: '/faq/list', query: { page: pageNum, keyword:keyword.value } }); // 다른 페이지 클릭 시 라우터 변경
+  }
 };
 
 // 컴포넌트가 마운트되었을 때 FAQ 리스트를 가져옴
 onMounted(() => {
   const page = route.query.page || 1;
   keyword.value = route.query.keyword || '';
-  fetchQNAList(page, keyword.value);
+  fetchFAQs(page, keyword.value);
 });
 
 // 라우트 변경 시 FAQ 리스트를 다시 로드
 onBeforeRouteUpdate(async (to, from, next) => {
   keyword.value = to.query.keyword || '';
-  await fetchQNAList(to.query.page || 1, keyword.value);
+  await fetchFAQs(to.query.page || 1, keyword.value);
   next();
 });
 

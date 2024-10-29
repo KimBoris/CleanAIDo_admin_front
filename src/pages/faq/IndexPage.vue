@@ -1,12 +1,14 @@
 <template>
   <div>
-    <div @click="goBack" v-if="!$route.meta.back">
-      <i class="fa fa-angle-left fs-10"></i>
+    <div class="flex-container">
+      <div @click="goBack" v-if="!$route.meta.back" class="cursor-pointer">
+        <RouterLink to="/faq/list"><i class="fa fa-angle-left fs-30 cursor-pointer"></i></RouterLink>
+      </div>
+      <h3 class="mb-4 fw-semibold">{{ $route.meta.title }}</h3>
+      <!--      <RouterLink to="/faq/list" class="btn btn-info">뒤로가기</RouterLink>-->
     </div>
-    <h3 class="text-center mb-4 fw-semibold">{{ $route.meta.title }}</h3>
     <RouterView/>
   </div>
-
 </template>
 
 <script setup>
@@ -24,13 +26,17 @@ const goBack = () => {
 
 </script>
 
-<style scoped>
+<style>
 .flex-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  gap: 20px;
 }
 
+.cursor-pointer {
+  cursor: pointer; /* 클릭할 수 있음을 나타냄 */
+}
 
+.fs-30 {
+  font-size: 30px; /* 아이콘 크기 조정 */
+}
 </style>
