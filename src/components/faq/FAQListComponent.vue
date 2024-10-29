@@ -1,14 +1,5 @@
 <template>
-  <!-- 탭 메뉴 -->
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
-    <!--    <ul class="nav nav-tabs" role="tablist">-->
-    <!--      <li class="nav-item">-->
-    <!--        <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">사용중</a>-->
-    <!--      </li>-->
-    <!--      <li class="nav-item">-->
-    <!--        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false">휴지통</a>-->
-    <!--      </li>-->
-    <!--    </ul>-->
     <div class="ms-auto">
       <Share />
     </div>

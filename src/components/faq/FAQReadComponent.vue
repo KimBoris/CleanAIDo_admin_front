@@ -1,14 +1,11 @@
 <template>
   <div>
     <div>
-      <!-- 뒤로가기 버튼 -->
 
-      <!-- 버튼 그룹 -->
-
+      <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
         <div class="ms-auto">
           <Share/>
         </div>
-      <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
       </div>
       <div>
         <div v-if="isLoading" class="flex items-center justify-center h-screen">
@@ -26,7 +23,8 @@
                 </div>
                 <div class="button-group">
                   <!-- 수정하기 버튼 -->
-                  <RouterLink :to="`/faq/edit/${faq.fno}`" class="btn btn-primary me-2 py-3 px-4 fs-6 color text-light">수정하기
+                  <RouterLink :to="`/faq/edit/${faq.fno}`" class="btn btn-primary me-2 py-3 px-4 fs-6 color text-light">
+                    수정하기
                   </RouterLink>
                 </div>
               </div>
@@ -66,8 +64,8 @@ const fetchFAQ = async (fno) => {
     faq.value = data;
   } catch (error) {
     console.error("FAQ 데이터 가져오기 중 오류 발생:", error);
-  }finally {
-    isLoading.value=false;
+  } finally {
+    isLoading.value = false;
   }
 };
 
