@@ -30,7 +30,10 @@
                 </div>
 
                 <div class="button-group">
-                  <RouterLink :to="`/faq/edit/${faq.fno}`" class="btn btn-primary me-2 py-3 px-4 fs-6 color text-light">수정하기</RouterLink>
+                  <!-- 수정하기 버튼 -->
+                  <RouterLink :to="`/faq/edit/${faq.fno}`" class="btn btn-primary me-2 py-3 px-4 fs-6 color text-light">
+                    수정하기
+                  </RouterLink>
                 </div>
               </div>
               <div v-else>

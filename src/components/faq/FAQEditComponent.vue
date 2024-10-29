@@ -1,5 +1,10 @@
 <template>
   <div v-if="!faq.delFlag">
+    <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
+      <div class="ms-auto">
+        <Share/>
+      </div>
+    </div>
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">자주 묻는 질문(수정)</h4>
@@ -68,6 +73,7 @@
 import {useRoute, useRouter} from "vue-router";
 import {deleteFAQOne, getFAQOne, putFAQOneWithFiles} from "../../apis/faqApi.js";
 import {onMounted, ref} from "vue";
+import Share from "../../layout/Share.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -125,6 +131,7 @@ onMounted(() => {
     faq.value = data;
   });
 });
+
 </script>
 
 <style scoped>

@@ -1,4 +1,9 @@
 <template>
+  <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
+    <div class="ms-auto">
+      <Share/>
+    </div>
+  </div>
   <div class="card">
     <div class="card-body">
       <h4 class="card-title">자주 묻는 질문 등록</h4>
@@ -49,8 +54,10 @@
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {postFAQOneWithFiles} from '../../apis/faqApi.js';
+import Share from "../../layout/Share.vue";
 
 const router = useRouter();
+
 const faq = ref({
   question: '',
   answer: ''
