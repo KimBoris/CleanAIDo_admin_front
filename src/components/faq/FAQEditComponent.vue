@@ -4,7 +4,7 @@
     </div>
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">자주묻는질문 수정</h4>
+        <h4 class="card-title">자주묻는질문(수정)</h4>
         <p class="card-description"> 내용을 입력하여주십시오 </p>
         <div class="form-group row">
           <label for="exampleInputEmail2" class="col-sm-3 col-form-label">질문</label>
@@ -78,7 +78,7 @@ const handleClickComplate = () => {
 };
 
 onMounted(() => {
-  console.log("fno: " + fno); // 이 부분에서 fno 값이 제대로 나오는지 확인
+  console.log("fno: " + fno);
   getFAQOne(fno)
       .then((data) => {
         faq.value = data;
@@ -91,3 +91,4 @@ onMounted(() => {
 <style scoped>
 
 </style>
+

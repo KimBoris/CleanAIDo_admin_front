@@ -23,15 +23,14 @@ export const getFAQOne = async (fno) => {
     return res.data;
 };
 
-export const postFAQOne = async (formData) => {
+export const postFAQOneWithFiles = async (formData) => {
     const res = await axios.post(`${host}`, formData, {
         headers: {
-            "Content-Type": "multipart/form-data",
-        },
+            'Content-Type': 'multipart/form-data'
+        }
     });
     return res.data;
 };
-
 export const deleteFAQOne = async (fno) => {
     const res = await axios.delete(`${host}/${fno}`);
 

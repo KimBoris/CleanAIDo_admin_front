@@ -149,9 +149,9 @@ const handleClickPage = (pageNum) => {
 // 모달 열기 (질문 데이터 가져오기)
 const openModal = async (qno, answered) => {
   try {
-    const qnaData = await getQNAOne(qno); // 서버에서 질문/답변 데이터를 받아옴
-    selectedQna.value = qnaData; // 받아온 질문 데이터를 모달에 적용
-    answerContent.value = qnaData.answertext || ''; // 기존 답변이 있으면 표시, 없으면 빈 값
+    const qnaData = await getQNAOne(qno);
+    selectedQna.value = qnaData;
+    answerContent.value = qnaData.answertext || '';
 
     if (answered) {
       isEditModalOpen.value = true; // 수정 모달 열기
