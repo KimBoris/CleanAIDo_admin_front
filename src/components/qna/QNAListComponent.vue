@@ -6,15 +6,8 @@
     </div>
   </div>
   <!-- 검색창 -->
-  <div>
-    <select v-model="selectedOption">
-      <option value="" disabled>------</option>
-      <option value="titleContents">제목+내용</option>
-      <option value="writer">작성자</option>
-    </select>
-    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
-    <button @click="handleSearch">검색</button>
-  </div>
+
+
   <div>
     <div v-if="isLoading" class="flex items-center justify-center h-screen">
       <!--로딩창-->
@@ -25,8 +18,17 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title"></h4>
-          <p class="card-description">
-          </p>
+          <p class="card-description"></p>
+          <div class="form-group d-flex justify-content-end">
+            <div class="input-group w-auto">
+              <input type="text" v-model="keyword" class="form-control px-2 py-1" placeholder="질문 검색" style="height: 36px;"/>
+              <div class="input-group-append">
+                <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
           <div class="table-responsive">
             <table class="table table-hover">
               <thead>
@@ -91,7 +93,8 @@
             <h4><strong>{{ selectedQna.title }} (수정 모드)</strong></h4>
           </div>
           <div class="qna-info">
-            <hr>
+            <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
+            </div>
             <p><strong>작성자</strong>
               <div class="qna-contents">{{ selectedQna.writer }}</div>
             </p>
@@ -113,30 +116,39 @@
     </div>
   </div>
   <!-- 답변 없는 질문용 모달 -->
-  <!--  <div v-if="isModalOpen" class="modal">-->
-  <!--    <div>-->
-  <!--      <div v-if="isLoading" class="flex items-center justify-center h-screen">-->
-  <!--        &lt;!&ndash;로딩창&ndash;&gt;-->
-  <!--        <LoadingComponent></LoadingComponent>-->
-  <!--      </div>-->
-  <!--      <div v-else>-->
-  <!--        <div class="modal-content">-->
-  <!--          <h2>{{ selectedQna.title }}</h2>-->
-  <!--          <p><strong>작성자:</strong> {{ selectedQna.writer }}</p>-->
-  <!--          <p><strong>문의 내용:</strong> {{ selectedQna.contents }}</p>-->
-
-  <!--          &lt;!&ndash; 답변 작성 &ndash;&gt;-->
-  <!--          <div>-->
-  <!--            <label for="answer"><strong>답변 작성:</strong></label>-->
-  <!--            <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 입력하세요"></textarea>-->
-  <!--            <button @click="submitAnswer(false)">완료</button>-->
-  <!--          </div>-->
-
-  <!--          <button @click="closeModal">닫기</button>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </div>-->
+  <div v-if="isModalOpen" class="modal">
+    <div class="modal-content">
+      <button class="btn btn-close close-button" @click="closeModal"></button>
+      <div>
+        <div v-if="isLoading" class="flex items-center justify-center h-screen">
+          <!--로딩창-->
+          <LoadingComponent></LoadingComponent>
+        </div>
+        <div v-else>
+          <div class="qna-info">
+            <h4><strong>{{ selectedQna.title }}</strong></h4>
+          </div>
+          <div class="qna-info">
+            <hr>
+            <p><strong>작성자</strong>
+              <div class="qna-contents"> {{ selectedQna.writer }}</div>
+            </p>
+            <p><strong>문의 내용</strong>
+              <div class="qna-contents">{{ selectedQna.contents }}</div>
+            </p>
+          </div>
+          <!-- 답변 작성 -->
+          <div>
+            <label for="answer"><strong>답변 작성:</strong></label>
+            <textarea id="answer" v-model="answerContent" rows="5" placeholder="답변을 입력하세요"></textarea>
+            <div class="text-end">
+              <button class="fs-6 text-white btn btn-primary" @click="submitAnswer(false)">완료</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>
 
