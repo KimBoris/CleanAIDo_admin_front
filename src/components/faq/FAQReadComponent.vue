@@ -2,13 +2,13 @@
   <div>
     <div>
       <!-- 뒤로가기 버튼 -->
-      <RouterLink to="/faq/list" class="btn btn-info">뒤로가기</RouterLink>
+
       <!-- 버튼 그룹 -->
-      <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
 
         <div class="ms-auto">
           <Share/>
         </div>
+      <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
       </div>
       <div>
         <div v-if="isLoading" class="flex items-center justify-center h-screen">
