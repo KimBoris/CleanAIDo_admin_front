@@ -13,61 +13,62 @@
     <div v-else>
       <!--  리스트-->
       <div class="card">
-      <div class="card-body">
-        <h4 class="card-title"></h4>
-        <p class="card-description">
-        </p>
-        <!-- 검색창 -->
-        <div class="form-group d-flex justify-content-end">
-          <div class="input-group w-auto">
-            <input type="text" v-model="keyword" class="form-control px-2 py-1" placeholder="질문 검색" style="height: 36px;"/>
-            <div class="input-group-append">
-              <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
-                <i class="fa fa-search"></i>
-              </button>
+        <div class="card-body">
+          <h4 class="card-title"></h4>
+          <p class="card-description">
+          </p>
+          <!-- 검색창 -->
+          <div class="form-group d-flex justify-content-end">
+            <div class="input-group w-auto">
+              <input type="text" v-model="keyword" class="form-control px-2 py-1" placeholder="질문 검색" style="height: 36px;"/>
+              <div class="input-group-append">
+                <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>질문</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="faq in faqList.dtoList" :key="faq.fno" class="pe-auto">
+                <td>
+                  <RouterLink :to="`/faq/read/${faq.fno}`" class="text-decoration-none text-dark">
+                    {{ faq.question }}
+                  </RouterLink>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <!-- 페이지네이션 -->
+            <div class="d-flex justify-content-center mt-5">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-if="faqList.prev" @click="handleClickPage(faqList.prevPage)"
+                >이전</button>
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-for="page in faqList.pageNumList" :key="page" @click="handleClickPage(page)"
+                >{{ page }}</button>
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-if="faqList.next" @click="handleClickPage(faqList.nextPage)"
+                >다음</button>
+              </div>
+              <button @click="goToRegister" class="btn btn-primary text-light ms-3">등록</button>
             </div>
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-            <tr>
-              <th>질문</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="faq in faqList.dtoList" :key="faq.fno" class="pe-auto">
-              <td>
-                <RouterLink :to="`/faq/read/${faq.fno}`" class="text-decoration-none text-dark">
-                  {{ faq.question }}
-                </RouterLink>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <!-- 페이지네이션 -->
-          <div class="d-flex justify-content-center mt-5">
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <button
-                  type="button"
-                  class="btn btn-outline-secondary py-3 px-3"
-                  v-if="faqList.prev" @click="handleClickPage(faqList.prevPage)"
-              >이전</button>
-              <button
-                  type="button"
-                  class="btn btn-outline-secondary py-3 px-3"
-                  v-for="page in faqList.pageNumList" :key="page" @click="handleClickPage(page)"
-              >{{ page }}</button>
-              <button
-                  type="button"
-                  class="btn btn-outline-secondary py-3 px-3"
-                  v-if="faqList.next" @click="handleClickPage(faqList.nextPage)"
-              >다음</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div></div>
+      </div></div>
   </div>
 </template>
 
