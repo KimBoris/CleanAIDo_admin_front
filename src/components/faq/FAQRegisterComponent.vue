@@ -1,5 +1,8 @@
 <template>
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
+    <div class="ms-auto">
+      <Share/>
+    </div>
   </div>
   <div class="card">
     <div class="card-body">
@@ -44,6 +47,7 @@
 import {useRouter} from "vue-router";
 import {ref} from "vue";
 import {postFAQOne} from "../../apis/faqApi.js";
+import Share from "../../layout/Share.vue";
 
 const router = useRouter();
 
