@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const host = "http://10.10.10.221:8080/api/v1/admin/faq";
+const host = "http://localhost:8080/api/v1/admin/faq";
 
 export const getFAQList = async (page, size, keyword = '') => {
     const params = {

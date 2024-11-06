@@ -11,18 +11,19 @@
     //Active class can be hard coded directly in html file also as required
 
     function addActiveClass(element) {
-      if (current === "") {
-        //for root url
-        if (element.attr('href').indexOf("index.html") !== -1) {
+      const href = element.attr('href'); // href 속성 값을 변수로 가져옵니다.
+
+      // href가 정의되어 있는지 확인 후 indexOf 호출
+      if (href && current === "") {
+        if (href.indexOf("index.html") !== -1) {
           element.parents('.nav-item').last().addClass('active');
           if (element.parents('.sub-menu').length) {
             element.closest('.collapse').addClass('show');
             element.addClass('active');
           }
         }
-      } else {
-        //for other url
-        if (element.attr('href').indexOf(current) !== -1) {
+      } else if (href) {
+        if (href.indexOf(current) !== -1) {
           element.parents('.nav-item').last().addClass('active');
           if (element.parents('.sub-menu').length) {
             element.closest('.collapse').addClass('show');
@@ -34,6 +35,7 @@
         }
       }
     }
+
 
     var current = location.pathname.split("/").slice(-1)[0].replace(/^\/|\/$/g, '');
     $('.nav li a', sidebar).each(function () {
