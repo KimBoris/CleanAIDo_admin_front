@@ -5,12 +5,9 @@
       <Share/>
     </div>
   </div>
-  <!-- 검색창 -->
-
-
   <div>
+    <!--로딩창-->
     <div v-if="isLoading" class="flex items-center justify-center h-screen">
-      <!--로딩창-->
       <LoadingComponent></LoadingComponent>
     </div>
     <div v-else>
@@ -20,13 +17,17 @@
           <h4 class="card-title"></h4>
           <p class="card-description"></p>
           <div class="form-group d-flex justify-content-end">
+            <!-- 검색창 -->
             <div class="input-group w-auto">
-              <input type="text" v-model="keyword" class="form-control px-2 py-1" placeholder="질문 검색" style="height: 36px;"/>
-              <div class="input-group-append">
-                <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
+              <select style="height: 36px;" v-model="selectedOption">
+                <option value="" disabled>------</option>
+                <option value="titleContents">제목+내용</option>
+                <option value="writer">작성자</option>
+              </select>
+              <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
+              <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
+                <i class="fa fa-search"></i>
+              </button>
             </div>
           </div>
           <div class="table-responsive">
