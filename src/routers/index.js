@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import faqRouters from "./faq.js";
 import qnaRouters from "./qna.js";
 import orderRouters from "./order.js";
+import product from "./product.js";
+import productRouters from "./product.js";
 
 const MainPage = () => import("../pages/MainPage.vue");
 
@@ -12,6 +14,7 @@ const router = createRouter({
         faqRouters,
         qnaRouters,
         orderRouters,
+        productRouters,
     ],
 });
 
