@@ -40,7 +40,9 @@
               </thead>
               <tbody>
               <tr v-for="qna in qnaList.dtoList" :key="qna.qno" class="pe-auto">
-                <td class="cursor-pointer" @click="openModal(qna.qno, qna.answered)">{{ qna.title }}</td>
+                <td class="cursor-pointer" @click="openModal(qna.qno, qna.answered)">
+                  <i class="fa fa-file-image-o"></i>
+                  {{ qna.title }}</td>
                 <td>{{ qna.writer }}</td>
                 <td>
                   <label :class="qna.answered ? 'badge badge-success' : 'badge badge-dark'">
