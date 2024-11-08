@@ -1,7 +1,6 @@
 import axios from "axios";
 
- const host = "http://localhost:8080/api/v1/admin/qna";
-
+const host = "http://localhost:8080/api/v1/admin/qna";
 
 // QnA 리스트 가져오기 (모든 질문 리스트)
 export const getQNAList = async (page, size, type='', keyword='') => {
