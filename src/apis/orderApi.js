@@ -8,9 +8,9 @@ export const getInProgressOrders = (page = 1, size = 10) => {
     });
 };
 
-export const getCanceledOrders = (page = 1, size = 10) => {
+export const getCanceledOrders = (page = 1, size = 10, status = '') => {
     return axios.get(`${host}/canceled`, {
-        params: { page, size }
+        params: { page, size, status }
     });
 };
 
@@ -20,8 +20,8 @@ export const searchInProgressOrders = (page = 1, size = 10, searchType, keyword)
     });
 };
 
-export const searchCanceledOrders = (page = 1, size = 10, searchType, keyword) => {
+export const searchCanceledOrders = (page = 1, size = 10, searchType, keyword, status = '') => {
     return axios.get(`${host}/canceled`, {
-        params: { page, size, searchType, keyword }
+        params: { page, size, searchType, keyword, status }
     });
 };

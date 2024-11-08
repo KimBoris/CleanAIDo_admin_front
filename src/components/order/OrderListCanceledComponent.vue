@@ -1,7 +1,15 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">취소/교환/환불 주문 내역</h4>
+      <h4 class="card-title">취소/교환/환불 상태 주문 내역</h4>
+
+      <!-- 상태 필터 버튼 -->
+      <div class="mb-3">
+        <button @click="fetchOrdersByStatus(null)" class="btn btn-secondary me-2">전체</button>
+        <button @click="fetchOrdersByStatus('취소')" class="btn btn-secondary me-2">취소</button>
+        <button @click="fetchOrdersByStatus('교환')" class="btn btn-secondary me-2">교환</button>
+        <button @click="fetchOrdersByStatus('환불')" class="btn btn-secondary">환불</button>
+      </div>
 
       <!-- 검색창 -->
       <div class="form-group d-flex justify-content-end">
@@ -64,9 +72,9 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
-import {useRoute, useRouter, onBeforeRouteUpdate} from 'vue-router';
-import {getCanceledOrders, searchCanceledOrders} from '../../apis/orderApi';
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
+import { getCanceledOrders, searchCanceledOrders } from '../../apis/orderApi';
 
 const route = useRoute();
 const router = useRouter();
@@ -86,11 +94,20 @@ const orderList = ref({
 const searchType = ref(route.query.searchType || "orderNumber");
 const keyword = ref(route.query.keyword || "");
 const currentPage = ref(parseInt(route.query.page) || 1);
+const statusFilter = ref(route.query.status || null);
+
+// 특정 상태의 주문 목록을 가져오는 함수
+const fetchOrdersByStatus = (status) => {
+  statusFilter.value = status;
+  router.push({ path: route.path, query: { page: 1, status, searchType: searchType.value, keyword: keyword.value } });
+};
 
 // 주문 목록을 가져오는 함수
-const fetchOrders = async (page, type = '', keyword = '') => {
+const fetchOrders = async (page, type = '', keyword = '', status = '') => {
   try {
-    const response = keyword ? await searchCanceledOrders(page, 10, type, keyword) : await getCanceledOrders(page, 10);
+    const response = keyword
+        ? await searchCanceledOrders(page, 10, type, keyword, status)
+        : await getCanceledOrders(page, 10, status);
     console.log("Fetched Order List:", response.data);
     orderList.value = response.data;
     currentPage.value = page;
@@ -101,26 +118,26 @@ const fetchOrders = async (page, type = '', keyword = '') => {
 
 // 검색 버튼 클릭 시
 const handleSearch = () => {
-  router.push({path: route.path, query: {page: 1, searchType: searchType.value, keyword: keyword.value}});
-  fetchOrders(1, searchType.value, keyword.value);
+  router.push({ path: route.path, query: { page: 1, searchType: searchType.value, keyword: keyword.value, status: statusFilter.value } });
 };
 
 // 페이지네이션 버튼 클릭 시
 const handleClickPage = (pageNum) => {
-  router.push({path: route.path, query: {page: pageNum, searchType: searchType.value, keyword: keyword.value}});
+  router.push({ path: route.path, query: { page: pageNum, searchType: searchType.value, keyword: keyword.value, status: statusFilter.value } });
 };
 
 // 컴포넌트가 마운트될 때 목록 불러오기
 onMounted(() => {
-  fetchOrders(currentPage.value, searchType.value, keyword.value);
+  fetchOrders(currentPage.value, searchType.value, keyword.value, statusFilter.value);
 });
 
 // 라우트 변경 시 목록 다시 불러오기
 onBeforeRouteUpdate((to, from, next) => {
   searchType.value = to.query.searchType || '';
   keyword.value = to.query.keyword || '';
+  statusFilter.value = to.query.status || null;
   currentPage.value = parseInt(to.query.page) || 1;
-  fetchOrders(currentPage.value, searchType.value, keyword.value);
+  fetchOrders(currentPage.value, searchType.value, keyword.value, statusFilter.value);
   next();
 });
 </script>
