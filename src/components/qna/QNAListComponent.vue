@@ -5,21 +5,9 @@
       <Share/>
     </div>
   </div>
-  <!-- 검색창 -->
-
-  <!-- 검색창 -->
   <div>
-    <select v-model="selectedOption">
-      <option value="" disabled>------</option>
-      <option value="titleContents">제목+내용</option>
-      <option value="writer">작성자</option>
-    </select>
-    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
-    <button @click="handleSearch">검색</button>
-  </div>
-  <div>
+    <!--로딩창-->
     <div v-if="isLoading" class="flex items-center justify-center h-screen">
-      <!--로딩창-->
       <LoadingComponent></LoadingComponent>
     </div>
     <div v-else>
@@ -29,13 +17,17 @@
           <h4 class="card-title"></h4>
           <p class="card-description"></p>
           <div class="form-group d-flex justify-content-end">
+            <!-- 검색창 -->
             <div class="input-group w-auto">
-              <input type="text" v-model="keyword" class="form-control px-2 py-1" placeholder="질문 검색" style="height: 36px;"/>
-              <div class="input-group-append">
-                <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
+              <select style="height: 36px;" v-model="selectedOption">
+                <option value="" disabled>------</option>
+                <option value="titleContents">제목+내용</option>
+                <option value="writer">작성자</option>
+              </select>
+              <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
+              <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
+                <i class="fa fa-search"></i>
+              </button>
             </div>
           </div>
           <div class="table-responsive">
@@ -49,7 +41,9 @@
               </thead>
               <tbody>
               <tr v-for="qna in qnaList.dtoList" :key="qna.qno" class="pe-auto">
-                <td class="cursor-pointer" @click="openModal(qna.qno, qna.answered)">{{ qna.title }}</td>
+                <td class="cursor-pointer" @click="openModal(qna.qno, qna.answered)">
+                  <i class="fa fa-file-image-o"></i>
+                  {{ qna.title }}</td>
                 <td>{{ qna.writer }}</td>
                 <td>
                   <label :class="qna.answered ? 'badge badge-success' : 'badge badge-dark'">
