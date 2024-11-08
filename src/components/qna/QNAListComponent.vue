@@ -7,7 +7,16 @@
   </div>
   <!-- 검색창 -->
 
-
+  <!-- 검색창 -->
+  <div>
+    <select v-model="selectedOption">
+      <option value="" disabled>------</option>
+      <option value="titleContents">제목+내용</option>
+      <option value="writer">작성자</option>
+    </select>
+    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
+    <button @click="handleSearch">검색</button>
+  </div>
   <div>
     <div v-if="isLoading" class="flex items-center justify-center h-screen">
       <!--로딩창-->
