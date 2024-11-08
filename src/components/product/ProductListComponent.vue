@@ -143,7 +143,7 @@ const handleSearch = () => {
   searchData.value.keyword = keyword.value;
   router.push({
     path: '/product/list',
-    query: {page: 1, searchType: searchData.value.type, keyword: searchData.value.keyword}
+    query: {page: 1, type: searchData.value.type, keyword: searchData.value.keyword}
   });
   fetchProductList(1, searchData.value.type, searchData.value.keyword);
 };
