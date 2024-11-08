@@ -18,3 +18,12 @@ export const getProductList = async (page, size, type='', keyword='') => {
     console.log(res)
     return res.data;
 };
+
+export const postProduct = async (formData) =>{
+    const res = await axios.post(`${host}`, formData,{
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    return res.data;
+}
