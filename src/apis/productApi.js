@@ -19,6 +19,15 @@ export const getProductList = async (page, size, type='', keyword='') => {
     return res.data;
 };
 
+export const getCategoryList = async (keyword='') => {
+    const params= {
+        keyword: keyword
+    }
+    const res = await axios.get(`${host}/register`, { params });
+    console.log(res)
+    return res.data;
+};
+
 export const postProduct = async (formData) =>{
     const res = await axios.post(`${host}`, formData,{
         headers: {
