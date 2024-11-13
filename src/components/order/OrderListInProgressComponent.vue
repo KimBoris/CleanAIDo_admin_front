@@ -35,7 +35,7 @@
           <tbody>
           <tr v-for="order in orderList.dtoList" :key="order.orderNumber">
             <td>{{ order.orderNumber }}</td>
-            <td>{{ order.productNumber }}</td>
+            <td>{{ order.productNumbers.join(', ') }}</td> <!-- 모든 상품 번호 출력 -->
             <td>{{ order.customerId }}</td>
             <td>{{ order.phoneNumber }}</td>
             <td>{{ order.deliveryAddress }}</td>
@@ -66,7 +66,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
-import { getInProgressOrders, searchInProgressOrders } from '../../apis/orderApi';
+import { getInProgressOrders } from '../../apis/orderApi';
 
 const route = useRoute();
 const router = useRouter();
@@ -88,10 +88,9 @@ const keyword = ref(route.query.keyword || "");
 const currentPage = ref(parseInt(route.query.page) || 1);
 
 // 주문 목록을 가져오는 함수
-const fetchOrders = async (page, type = '', keyword = '') => {
+const fetchOrders = async (page) => {
   try {
-    const response = keyword ? await searchInProgressOrders(page, 10, type, keyword) : await getInProgressOrders(page, 10);
-    console.log("Fetched Order List:", response.data);
+    const response = await getInProgressOrders(page, 10, searchType.value, keyword.value);
     orderList.value = response.data;
     currentPage.value = page;
   } catch (error) {
@@ -101,18 +100,19 @@ const fetchOrders = async (page, type = '', keyword = '') => {
 
 // 검색 버튼 클릭 시
 const handleSearch = () => {
-  router.push({ path: route.path, query: { page: 1, searchType: searchType.value, keyword: keyword.value } });
-  fetchOrders(1, searchType.value, keyword.value);
+  router.push({path: route.path, query: {page: 1, searchType: searchType.value, keyword: keyword.value}});
+  fetchOrders(1);
 };
 
 // 페이지네이션 버튼 클릭 시
 const handleClickPage = (pageNum) => {
-  router.push({ path: route.path, query: { page: pageNum, searchType: searchType.value, keyword: keyword.value } });
+  router.push({path: route.path, query: {page: pageNum, searchType: searchType.value, keyword: keyword.value}});
+  fetchOrders(pageNum);
 };
 
 // 컴포넌트가 마운트될 때 목록 불러오기
 onMounted(() => {
-  fetchOrders(currentPage.value, searchType.value, keyword.value);
+  fetchOrders(currentPage.value);
 });
 
 // 라우트 변경 시 목록 다시 불러오기
@@ -120,7 +120,7 @@ onBeforeRouteUpdate((to, from, next) => {
   searchType.value = to.query.searchType || '';
   keyword.value = to.query.keyword || '';
   currentPage.value = parseInt(to.query.page) || 1;
-  fetchOrders(currentPage.value, searchType.value, keyword.value);
+  fetchOrders(currentPage.value);
   next();
 });
 </script>
