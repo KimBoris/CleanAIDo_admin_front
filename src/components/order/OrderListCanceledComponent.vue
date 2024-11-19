@@ -43,7 +43,7 @@
           <tbody>
           <tr v-for="order in orderList.dtoList" :key="order.orderNumber">
             <td>{{ order.orderNumber }}</td>
-            <td>{{ order.productNumber }}</td>
+            <td>{{ order.productNumbers.join(', ') }}</td>
             <td>{{ order.customerId }}</td>
             <td>{{ order.phoneNumber }}</td>
             <td>{{ order.deliveryAddress }}</td>
@@ -74,7 +74,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
-import { getCanceledOrders, searchCanceledOrders } from '../../apis/orderApi';
+import { getCanceledOrders } from '../../apis/orderApi';
 
 const route = useRoute();
 const router = useRouter();
@@ -99,16 +99,13 @@ const statusFilter = ref(route.query.status || null);
 // 특정 상태의 주문 목록을 가져오는 함수
 const fetchOrdersByStatus = (status) => {
   statusFilter.value = status;
-  router.push({ path: route.path, query: { page: 1, status, searchType: searchType.value, keyword: keyword.value } });
+  fetchOrders(1, status); // 상태 변경 후 목록 다시 불러오기
 };
 
 // 주문 목록을 가져오는 함수
-const fetchOrders = async (page, type = '', keyword = '', status = '') => {
+const fetchOrders = async (page, status = '') => {
   try {
-    const response = keyword
-        ? await searchCanceledOrders(page, 10, type, keyword, status)
-        : await getCanceledOrders(page, 10, status);
-    console.log("Fetched Order List:", response.data);
+    const response = await getCanceledOrders(page, 10, status, searchType.value, keyword.value);
     orderList.value = response.data;
     currentPage.value = page;
   } catch (error) {
@@ -119,16 +116,18 @@ const fetchOrders = async (page, type = '', keyword = '', status = '') => {
 // 검색 버튼 클릭 시
 const handleSearch = () => {
   router.push({ path: route.path, query: { page: 1, searchType: searchType.value, keyword: keyword.value, status: statusFilter.value } });
+  fetchOrders(1, statusFilter.value);
 };
 
 // 페이지네이션 버튼 클릭 시
 const handleClickPage = (pageNum) => {
   router.push({ path: route.path, query: { page: pageNum, searchType: searchType.value, keyword: keyword.value, status: statusFilter.value } });
+  fetchOrders(pageNum, statusFilter.value);
 };
 
 // 컴포넌트가 마운트될 때 목록 불러오기
 onMounted(() => {
-  fetchOrders(currentPage.value, searchType.value, keyword.value, statusFilter.value);
+  fetchOrders(currentPage.value, statusFilter.value);
 });
 
 // 라우트 변경 시 목록 다시 불러오기
@@ -137,7 +136,7 @@ onBeforeRouteUpdate((to, from, next) => {
   keyword.value = to.query.keyword || '';
   statusFilter.value = to.query.status || null;
   currentPage.value = parseInt(to.query.page) || 1;
-  fetchOrders(currentPage.value, searchType.value, keyword.value, statusFilter.value);
+  fetchOrders(currentPage.value, statusFilter.value);
   next();
 });
 </script>
