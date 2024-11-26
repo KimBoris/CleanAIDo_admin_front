@@ -22,7 +22,7 @@ export const getQNAList = async (page, size, type = '', keyword = '') => {
 
     try {
         // axios 요청
-        const res = await axios.get("http://localhost:8080/api/v1/admin/qna/list", {
+        const res = await axios.get(`${host}/list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`, // Authorization 헤더 추가
             },
