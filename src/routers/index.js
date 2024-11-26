@@ -3,6 +3,7 @@ import faqRouters from "./faq.js";
 import qnaRouters from "./qna.js";
 import orderRouters from "./order.js";
 import productRouters from "./product.js";
+import authRouters from "./auth.js";
 
 const MainPage = () => import("../pages/MainPage.vue");
 
@@ -10,6 +11,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', component: MainPage },
+        authRouters,
         faqRouters,
         qnaRouters,
         orderRouters,
