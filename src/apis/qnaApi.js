@@ -1,22 +1,41 @@
 import axios from "axios";
-
+import useAuthStore from "../stores/useAuthStore.js";
+// Pinia store를 가져와서 사용
+const authStore = useAuthStore();
+const accessToken = authStore.accessToken
 const host = "http://localhost:8080/api/v1/admin/qna";
 
 // QnA 리스트 가져오기 (모든 질문 리스트)
-export const getQNAList = async (page, size, type='', keyword='') => {
-    const params= {
-            page: page || 1,
-            size: size || 10,
+export const getQNAList = async (page, size, type = '', keyword = '') => {
+
+    const params = {
+        page: page || 1,
+        size: size || 10,
     };
-    if(keyword){
-        if(type){
+
+    if (keyword) {
+        if (type) {
             params.keyword = keyword;
             params.searchType = type;
         }
     }
-    const res = await axios.get(`${host}/list`, { params });
-    console.log(res)
-    return res.data;
+
+    try {
+        // axios 요청
+        const res = await axios.get(`${host}/list`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`, // Authorization 헤더 추가
+            },
+            params, // Query string 파라미터 추가
+        });
+
+        console.log(res);
+        return res.data;
+
+    } catch (error) {
+        console.error("Error fetching QnA list:", error);
+        throw error; // 필요 시 호출하는 곳에서 에러 처리
+    }
 };
 
 // 개별 QnA 질문 가져오기 (질문 + 답변 데이터)

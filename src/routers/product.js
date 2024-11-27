@@ -1,6 +1,9 @@
+import ProductReadComponent from "../components/product/ProductReadComponent.vue";
+
 const IndexPage = () => import("../pages/faq/IndexPage.vue");
 const ProductListPage = () => import("../pages/product/ProductListPage.vue");
 const ProductRegisterPage = () => import("../pages/product/ProductRegisterPage.vue");
+const ProductReadPage = () => import("../pages/product/ProductReadPage.vue")
 
 
 const productRouters = {
@@ -11,6 +14,7 @@ const productRouters = {
         {path: "", redirect: '/product/list'},
         {path: "list", component: ProductListPage, meta:{back: "none"} },
         {path: "register", component: ProductRegisterPage },
+        {path: "read/:pno", component: ProductReadPage},
     ],
 };
 
