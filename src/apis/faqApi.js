@@ -1,8 +1,11 @@
 import axios from "axios";
+import useAuthStore from "../stores/useAuthStore.js";
 
 const host = "http://localhost:8080/api/v1/admin/faq";
 
 export const getFAQList = async (page, size, keyword = '') => {
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken
     const params = {
         page: page || 1,
         size: size || 10,
@@ -12,7 +15,12 @@ export const getFAQList = async (page, size, keyword = '') => {
         params.keyword = keyword;
     }
 
-    const res = await axios.get(`${host}/list`, { params });
+    const res = await axios.get(`${host}/list`, {
+        params,
+        headers: {
+            Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 추가
+        },
+    });
     return res.data;
 };
 

@@ -5,7 +5,7 @@ const useAuthStore = defineStore('authStore', () => {
     // 상태 정의
     const accessToken = ref(localStorage.getItem('accessToken') || '');
     const refreshToken = ref(localStorage.getItem('refreshToken'))
-    const role = ref(localStorage.getItem('userRole') || 'user');
+    const role = ref(localStorage.getItem('userRole') || '');
     const userId = ref(localStorage.getItem('userId') || '');
 
     const userRole = toRef(role);
@@ -15,16 +15,18 @@ const useAuthStore = defineStore('authStore', () => {
     const isAuthenticated = computed(() => !!accessToken.value);
 
     // 로그인 메서드
-    const login = (accessToken, userRole, email) => {
-        accessToken.value = accessToken;
-        refreshToken.value = a
+    const login = (access, refresh, userRole, email) => {
+        accessToken.value = access;
+        refreshToken.value = refresh;
         role.value = userRole;
         userId.value = email;
 
         // localStorage에 저장하여 페이지 새로고침 후에도 상태 유지
         localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('accessToken', refreshToken);
         localStorage.setItem('userRole', userRole);
         localStorage.setItem('userId', email);
+        console.log("sdfasdfasdfasdfasdf"+accessToken)
     };
 
     // 로그아웃 메서드

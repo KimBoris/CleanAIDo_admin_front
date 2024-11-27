@@ -1,6 +1,6 @@
 <template>
-  <AdminSideBar v-if="userRole === 'admin'"></AdminSideBar>
-  <UserSideBar v-if="userRole === 'user'"></UserSideBar>
+  <AdminSideBar v-if="userRole === 'ADMIN'"></AdminSideBar>
+  <UserSideBar v-if="userRole === 'SELLER'"></UserSideBar>
 </template>
 
 <script setup>

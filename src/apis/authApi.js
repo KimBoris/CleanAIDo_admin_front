@@ -1,4 +1,7 @@
 import axios from "axios";
+import useAuthStore from "../stores/useAuthStore.js";
+const authStore = useAuthStore();
+
 
 const apiClient = axios.create({
     baseURL: "http://localhost:8080/api/auth",
@@ -9,6 +12,14 @@ const apiClient = axios.create({
 
 export const login = async (credentials) => {
     const response = await apiClient.post("/login", credentials);
+
+    console.log(response.data)
+
+    const role = response.data.adminRole ? 'ADMIN' : 'SELLER';
+
+    authStore.login(response.data.accessToken, response.data.refreshToken,
+        role, response.data.id)
+
     return response.data;
 };
 

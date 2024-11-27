@@ -152,23 +152,23 @@ const categoryList = ref({
 
 // 상품 데이터 불러오기
 const fetchProductData = async () => {
-  const productId = route.params.id;
+  const productId = route.params.pno;
   const product = await getProductById(productId);
 
   editData.value = {
-    pname: product.pname,
+    pname: product.pno,
     price: product.price,
     pcode: product.pcode,
     quantity: product.quantity,
     pstatus: product.pstatus,
     releasedAt: product.releasedAt,
-    ptags: product.ptags,
+    ptags: product.tags,
     imageFiles: product.imageFiles || [],
     detailImageFiles: product.detailImageFiles || [],
     usageImageFiles: product.usageImageFiles || []
   };
 
-  categoryData.value.categoryList = product.categoryList || [];
+  categoryData.value.categoryList = product.categories || [];
 };
 
 // 카테고리 데이터 가져오기
@@ -218,7 +218,7 @@ const handleClickUpdate = async () => {
   editData.value.usageImageFiles.forEach((image) => formData.append('usageImageFiles', image));
 
   try {
-    await updateProduct(route.params.id, formData);
+    await updateProduct(route.params.pno, formData);
     router.replace('/product/list');
   } catch (err) {
     error.value = err.response.data.message;
