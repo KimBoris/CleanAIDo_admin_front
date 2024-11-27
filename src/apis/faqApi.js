@@ -1,5 +1,5 @@
 import axios from "axios";
-import useAuthStore from "../stores/useAuthStore.js";
+import {useAuthStore} from "../stores/useAuthStore.js";
 
 const host = "http://localhost:8080/api/v1/admin/faq";
 
@@ -26,26 +26,46 @@ export const getFAQList = async (page, size, keyword = '') => {
 
 
 export const getFAQOne = async (fno) => {
-    const res = await axios.get(`${host}/${fno}`);
-
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken
+    const res = await axios.get(`${host}/${fno}`,{
+        headers: {
+            Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 추가
+        },
+    });
     return res.data;
 };
 
 export const postFAQOneWithFiles = async (formData) => {
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken
     const res = await axios.post(`${host}`, formData, {
         headers: {
+            Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'multipart/form-data'
         }
     });
     return res.data;
 };
 export const deleteFAQOne = async (fno) => {
-    const res = await axios.delete(`${host}/${fno}`);
-
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken
+    const res = await axios.delete(`${host}/${fno}`,{
+        headers: {
+            Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 추가
+        },
+    });
     return res.data;
 };
 
 export const putFAQOneWithFiles = async (fno, formData) => {
-    const res = await axios.put(`${host}/${fno}`, formData);
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken
+    const res = await axios.put(`${host}/${fno}`, formData,{
+        headers: {
+            Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 추가
+        },
+
+    });
     return res.data;
 };

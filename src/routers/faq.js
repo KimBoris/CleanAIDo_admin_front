@@ -9,11 +9,11 @@ const faqRouters = {
     component: IndexPage,
     meta: { title: "자주 묻는 질문(FAQ)" },
     children: [
-        {path: "", redirect: '/faq/list'},
-        {path: "list", component: FAQListPage, meta:{back: "none"} },
-        {path: "register", component: FAQRegisterPage },
-        {path: "read/:fno", component: FAQReadPage },
-        {path: "edit/:fno", component: FAQEditPage }
+        { path: "", redirect: "/faq/list" },
+        { path: "list", component: FAQListPage, meta: { back: "none" } },
+        { path: "register", component: FAQRegisterPage, meta: { requiredRole: "ROLE_ADMIN" } }, // 관리자만 접근 가능
+        { path: "read/:fno", component: FAQReadPage },
+        { path: "edit/:fno", component: FAQEditPage, meta: { requiredRole: "ROLE_ADMIN" } }, // 관리자만 접근 가능
     ],
 };
 
