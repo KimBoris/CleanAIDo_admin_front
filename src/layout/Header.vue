@@ -81,7 +81,7 @@
             <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
             <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
             <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a>
-            <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
+            <a class="dropdown-item" @click="handleLogout"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i> Sign Out</a>
           </div>
         </li>
       </ul>
@@ -93,9 +93,18 @@
 </template>
 
 <script setup>
+import { useAuthStore } from "../stores/useAuthStore"; // Auth Store
+import { useRouter } from "vue-router"; // Router for navigation
 
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleLogout = () => {
+  authStore.logout();
+  router.push("/auth/login");
+};
 </script>
 
 <style scoped>
-
+/* Add your styles here */
 </style>
