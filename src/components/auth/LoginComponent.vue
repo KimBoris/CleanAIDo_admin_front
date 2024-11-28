@@ -19,23 +19,16 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "../../stores/useAuthStore";
+import { login } from "../../apis/authApi.js"
 
 const credentials = ref({ userId: "", password: "" });
 const error = ref(null);
 const router = useRouter();
-const authStore = useAuthStore();
 
 const handleLogin = async () => {
   try {
-    await authStore.login(credentials.value);
-
-    if (authStore.isAuthenticated) {
-      console.log("로그인 성공:", authStore.accessToken);
-      router.push("/");
-    } else {
-      error.value = authStore.error || "로그인 실패";
-    }
+    const response = await login(credentials.value).then(router.push("/"))
+    console.log(response.data)
   } catch (err) {
     console.error("로그인 오류:", err);
     error.value = err.message;

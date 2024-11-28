@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import { login as apiLogin, setAuthToken } from "../apis/authApi";
 
 export const useAuthStore = defineStore("authStore", () => {
     const accessToken = ref(localStorage.getItem("accessToken") || "");
@@ -11,29 +10,26 @@ export const useAuthStore = defineStore("authStore", () => {
 
     const isAuthenticated = computed(() => !!accessToken.value);
 
-    const login = async (credentials) => {
+    const setLogin = async (response) => {
         try {
-            const response = await apiLogin(credentials);
-            const { accessToken: token, refreshToken: refresh, adminRole } = response;
 
-            accessToken.value = token;
-            refreshToken.value = refresh;
-            role.value = adminRole ? "ROLE_ADMIN" : "ROLE_SELLER";
-            userId.value = credentials.userId;
+            accessToken.value = response.data.accessToken;
+            refreshToken.value = response.data.refreshToken;
+            role.value = response.data.adminRole ? "ROLE_ADMIN" : "ROLE_SELLER";
+            userId.value = response.data.userId;
             error.value = null;
 
-            localStorage.setItem("accessToken", token);
-            localStorage.setItem("refreshToken", refresh);
+            localStorage.setItem("accessToken", accessToken.value);
+            localStorage.setItem("refreshToken", refreshToken.value);
             localStorage.setItem("userRole", role.value);
             localStorage.setItem("userId", userId.value);
 
-            setAuthToken(token);
         } catch (err) {
             error.value = err.message || "로그인 실패";
         }
     };
 
-    const logout = () => {
+    const setLogout = () => {
         accessToken.value = "";
         refreshToken.value = "";
         role.value = "";
@@ -48,5 +44,5 @@ export const useAuthStore = defineStore("authStore", () => {
         setAuthToken(null);
     };
 
-    return { accessToken, refreshToken, role, userId, error, isAuthenticated, login, logout };
+    return { accessToken, refreshToken, role, userId, error, isAuthenticated, setLogin, setLogout };
 });
