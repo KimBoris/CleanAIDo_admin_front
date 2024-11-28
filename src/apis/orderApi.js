@@ -6,9 +6,15 @@ const host = 'http://localhost:8080/api/v1/admin/orders';
 export const getInProgressOrders = (page = 1, size = 10, searchType = '', keyword = '') => {
     const authStore = useAuthStore();
     const accessToken = authStore.accessToken
+    if(!accessToken){
+
+    }
     return axios.get(`${host}/in-progress`, {
         Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 추가
-        params: { page, size, searchType, keyword }
+        params: { page, size, searchType, keyword },
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
     });
 };
 
