@@ -35,6 +35,7 @@
               <thead>
               <tr>
                 <th style="width: 10%;">품번</th>
+                <th v-if="role === 'ROLE_ADMIN'" style="width: 10%;">스토어명</th> <!-- 조건부 렌더링 -->
                 <th style="width: 10%;">제품명</th>
                 <th style="width: 10%;">가격</th>
                 <th style="width: 10%;">수량</th>
@@ -45,6 +46,7 @@
               <tbody>
               <tr v-for="product in productList.dtoList" :key="product.pno" class="pe-auto">
                 <td class="cursor-pointer">{{ product.pcode }}</td>
+                <td v-if="role === 'ROLE_ADMIN'">{{ product.storeName }}</td>
                 <td>{{ product.pname }}</td>
                 <td>{{ product.price }}</td>
                 <td>{{ product.quantity }}</td>
@@ -85,11 +87,11 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
+import {useAuthStore} from '../../stores/useAuthStore'; // Pinia 스토어 가져오기
 import {getProductList} from '../../apis/productApi.js';
 import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
@@ -97,6 +99,10 @@ import LoadingComponent from "../common/LoadingComponent.vue";
 
 const route = useRoute();
 const router = useRouter();
+
+// AuthStore 사용
+const authStore = useAuthStore();
+const role = computed(() => authStore.role); // role을 Pinia에서 가져옴
 
 // 리스트 데이터 관리
 const productList = ref({
@@ -217,5 +223,4 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
-
 </style>

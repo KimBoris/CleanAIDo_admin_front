@@ -1,82 +1,86 @@
 import axios from "axios";
-import {useAuthStore} from "../stores/useAuthStore.js";
+import { useAuthStore } from "../stores/useAuthStore.js";
 
-const host = "http://localhost:8080/api/v1/seller/product";
+const host = "http://localhost:8080/api/v1/product";
 
-// QnA 리스트 가져오기 (모든 질문 리스트)
-export const getProductList = async (page, size, type='', keyword='') => {
+// 상품 리스트 가져오기 (ROLE_ADMIN, ROLE_SELLER 접근 가능)
+export const getProductList = async (page, size, type = '', keyword = '') => {
     const authStore = useAuthStore();
-    const accessToken = authStore.accessToken
-    const params= {
+    const accessToken = authStore.accessToken;
+    const params = {
         page: page || 1,
         size: size || 10,
     };
-    if(keyword){
-        if(type){
+
+    if (keyword) {
+        if (type) {
             params.keyword = keyword;
             params.type = type;
         }
     }
+
     const res = await axios.get(`${host}/list`, {
         params,
-        headers:{
-            Authorization: `Bearer ${accessToken}`,
+        headers: {
+            Authorization: `Bearer ${accessToken}`, // accessToken 추가
         },
     });
-    console.log(res)
     return res.data;
 };
 
-export const getCategoryList = async (keyword='') => {
+// 카테고리 리스트 가져오기 (ROLE_SELLER 접근 가능)
+export const getCategoryList = async (keyword = '') => {
     const authStore = useAuthStore();
-    const accessToken = authStore.accessToken
-    const params= {
-        keyword: keyword
-    }
-    const res = await axios.get(`${host}/register`, {
-        headers:{
-            Authorization: `Bearer ${accessToken}`,
+    const accessToken = authStore.accessToken;
+    const params = {
+        keyword: keyword,
+    };
+
+    const res = await axios.get(`${host}/seller/category`, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`, // accessToken 추가
         },
-        params
+        params,
     });
-    console.log(res)
     return res.data;
 };
 
-export const postProduct = async (formData) =>{
+// 상품 등록 (ROLE_SELLER 접근 가능)
+export const postProduct = async (formData) => {
     const authStore = useAuthStore();
-    const accessToken = authStore.accessToken
-    const res = await axios.post(`${host}`, formData,{
+    const accessToken = authStore.accessToken;
+    const res = await axios.post(`${host}/seller/register`, formData, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'multipart/form-data'
-        }
+            "Content-Type": "multipart/form-data",
+        },
     });
     return res.data;
-}
+};
 
-// QnA 리스트 가져오기 (모든 질문 리스트)
+// 특정 상품 조회 (ROLE_ADMIN, ROLE_SELLER 접근 가능)
 export const getProductById = async (pno) => {
     const authStore = useAuthStore();
-    const accessToken = authStore.accessToken
-    console.log(`${host}/read/${pno}`)
-    const res = await axios.get(`${host}/read/${pno}`,{
+    const accessToken = authStore.accessToken;
+
+    const res = await axios.get(`${host}/read/${pno}`, {
         headers: {
-            Authorization: `Bearer ${accessToken}`,
-        }
-    })
-
-
+            Authorization: `Bearer ${accessToken}`, // accessToken 추가
+        },
+    });
     return res.data;
 };
 
-export const updateProduct = async (formData)=>{
+// 상품 수정 (ROLE_SELLER 접근 가능)
+export const updateProduct = async (pno, formData) => {
     const authStore = useAuthStore();
-    const accessToken = authStore.accessToken
-    const res = await axios.put(`${host}`, formData,{
+    const accessToken = authStore.accessToken;
+
+    const res = await axios.put(`${host}/seller/${pno}`, formData, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'multipart/form-data'
-        }
-    })
-}
+            "Content-Type": "multipart/form-data",
+        },
+    });
+    return res.data;
+};
