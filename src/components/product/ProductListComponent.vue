@@ -43,7 +43,10 @@
               </tr>
               </thead>
               <tbody>
-              <tr v-for="product in productList.dtoList" :key="product.pno" class="pe-auto">
+              <tr v-for="product in productList.dtoList"
+                  :key="product.pno"
+                  class="pe-auto cursor-pointer"
+                  @click="goToEditPage(product.pno)">
                 <td class="cursor-pointer">{{ product.pcode }}</td>
                 <td>{{ product.pname }}</td>
                 <td>{{ product.price }}</td>
@@ -146,6 +149,9 @@ const handleSearch = () => {
     query: {page: 1, type: searchData.value.type, keyword: searchData.value.keyword}
   });
   fetchProductList(1, searchData.value.type, searchData.value.keyword);
+};
+const goToEditPage = (pno) => {
+  router.push({ path: `/product/read/${pno}`});
 };
 </script>
 

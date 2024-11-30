@@ -1,7 +1,7 @@
 import axios from "axios";
 import {useAuthStore} from "../stores/useAuthStore.js";
 
-const host = "http://localhost:8080/api/v1/seller/product";
+const host = "http://localhost:8080/api/v1/product";
 
 // QnA 리스트 가져오기 (모든 질문 리스트)
 export const getProductList = async (page, size, type='', keyword='') => {

@@ -124,6 +124,7 @@ import { getProductById, updateProduct, getCategoryList } from "../../apis/produ
 const router = useRouter();
 const route = useRoute();
 const error = ref(null);
+const pno = route.params.pno
 
 const editData = ref({
   pname: '',
@@ -152,11 +153,11 @@ const categoryList = ref({
 
 // 상품 데이터 불러오기
 const fetchProductData = async () => {
-  const productId = route.params.pno;
-  const product = await getProductById(productId);
+  console.log(pno)
+  const product = await getProductById(pno);
 
   editData.value = {
-    pname: product.pno,
+    pname: product.pname,
     price: product.price,
     pcode: product.pcode,
     quantity: product.quantity,
