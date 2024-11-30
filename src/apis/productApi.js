@@ -33,7 +33,7 @@ export const getCategoryList = async (keyword='') => {
     const params= {
         keyword: keyword
     }
-    const res = await axios.get(`${host}/register`, {
+    const res = await axios.get(`${host}/seller/category`, {
         headers:{
             Authorization: `Bearer ${accessToken}`,
         },
@@ -46,7 +46,7 @@ export const getCategoryList = async (keyword='') => {
 export const postProduct = async (formData) =>{
     const authStore = useAuthStore();
     const accessToken = authStore.accessToken
-    const res = await axios.post(`${host}`, formData,{
+    const res = await axios.post(`${host}/seller/register`, formData,{
         headers: {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'multipart/form-data'
