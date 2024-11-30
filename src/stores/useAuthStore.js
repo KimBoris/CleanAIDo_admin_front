@@ -41,7 +41,6 @@ export const useAuthStore = defineStore("authStore", () => {
         localStorage.removeItem("userRole");
         localStorage.removeItem("userId");
 
-        setAuthToken(null);
     };
 
     return { accessToken, refreshToken, role, userId, error, isAuthenticated, setLogin, setLogout };
