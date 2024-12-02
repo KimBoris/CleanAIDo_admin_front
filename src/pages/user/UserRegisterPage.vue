@@ -1,10 +1,11 @@
+<template>
+  <UserRegisterComponent />
+</template>
+
 <script setup>
 
+import UserRegisterComponent from "../../components/user/UserRegisterComponent.vue";
 </script>
-
-<template>
-  $END$
-</template>
 
 <style scoped>
 

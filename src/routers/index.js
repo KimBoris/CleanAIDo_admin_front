@@ -4,6 +4,7 @@ import qnaRouters from "./qna.js";
 import orderRouters from "./order.js";
 import productRouters from "./product.js";
 import authRouters from "./auth.js";
+import userRouters from "./user.js";
 
 const MainPage = () => import("../pages/MainPage.vue");
 
@@ -16,6 +17,7 @@ const router = createRouter({
         qnaRouters,
         orderRouters,
         productRouters,
+        userRouters,
     ],
 });
 
