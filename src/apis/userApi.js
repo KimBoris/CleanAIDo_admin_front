@@ -1,4 +1,5 @@
 import axios from "axios";
+import useAuthStore from "../stores/useAuthStore.js";
 
 const host = "http://localhost:8080/api/v1/admin/user";
 
@@ -87,5 +88,31 @@ export const postCheckUserId = async (userId) => {
         throw error;
         
     }
+}
+
+export const getUserRequestList = async (page, size) => {
+
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken
+
+    try {
+        const params= {
+            page: page || 1,
+            size: size || 10,
+        };
+
+        const res = await axios.get(`${host}/request`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            params,
+        });
+    } catch (error) {
+
+        console.error("입점요청 리스트 호출 실패", error.response?.data || error.message);
+        throw error;
+
+    }
+
 }
     
