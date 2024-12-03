@@ -16,86 +16,45 @@
       </div>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-top">
-      <ul class="navbar-nav">
-        <li class="nav-item fw-semibold d-none d-lg-block ms-0">
-          <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">John Doe</span></h1>
-          <h3 class="welcome-sub-text">Your performance summary this week </h3>
-        </li>
-      </ul>
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <form class="search-form" action="#">
-            <i class="icon-search"></i>
-            <input type="search" class="form-control" placeholder="Search Here" title="Search here">
-          </form>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="icon-bell"></i>
-            <span class="count"></span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
-            <a class="dropdown-item py-3 border-bottom">
-              <p class="mb-0 fw-medium float-start">You have 4 new notifications </p>
-              <span class="badge badge-pill badge-primary float-end">View all</span>
-            </a>
-            <a class="dropdown-item preview-item py-3">
-              <div class="preview-thumbnail">
-                <i class="mdi mdi-alert m-auto text-primary"></i>
-              </div>
-              <div class="preview-item-content">
-                <h6 class="preview-subject fw-normal text-dark mb-1">Application Error</h6>
-                <p class="fw-light small-text mb-0"> Just now </p>
-              </div>
-            </a>
-            <a class="dropdown-item preview-item py-3">
-              <div class="preview-thumbnail">
-                <i class="mdi mdi-lock-outline m-auto text-primary"></i>
-              </div>
-              <div class="preview-item-content">
-                <h6 class="preview-subject fw-normal text-dark mb-1">Settings</h6>
-                <p class="fw-light small-text mb-0"> Private message </p>
-              </div>
-            </a>
-            <a class="dropdown-item preview-item py-3">
-              <div class="preview-thumbnail">
-                <i class="mdi mdi-airballoon m-auto text-primary"></i>
-              </div>
-              <div class="preview-item-content">
-                <h6 class="preview-subject fw-normal text-dark mb-1">New user registration</h6>
-                <p class="fw-light small-text mb-0"> 2 days ago </p>
-              </div>
-            </a>
-          </div>
-        </li>
         <li class="nav-item dropdown d-none d-lg-block user-dropdown">
           <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
             <img class="img-xs rounded-circle" src="/assets/images/faces/face8.jpg" alt="Profile image"> </a>
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
             <div class="dropdown-header text-center">
               <img class="img-md rounded-circle" src="/assets/images/faces/face8.jpg" alt="Profile image">
-              <p class="mb-1 mt-3 fw-semibold">Allen Moreno</p>
-              <p class="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
+              <!-- 이름과 역할 출력 -->
+              <p class="mb-1 mt-3 fw-semibold">{{ ownerName }} {{ role === 'ROLE_ADMIN' ? '관리자님' : '판매자님' }}</p>
+              <!-- 이메일 출력 -->
+              <p class="fw-light text-muted mb-0">{{ userId }}</p>
             </div>
+
             <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span class="badge badge-pill badge-danger">1</span></a>
             <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
             <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
             <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a>
-            <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
+            <a class="dropdown-item" @click="handleLogout"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i> Sign Out</a>
           </div>
         </li>
       </ul>
-      <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
-        <span class="mdi mdi-menu"></span>
-      </button>
     </div>
   </nav>
 </template>
 
 <script setup>
+import { useAuthStore } from "../stores/useAuthStore";
+import { useRouter } from "vue-router";
+import { computed } from "vue";
 
+const authStore = useAuthStore();
+const router = useRouter();
+
+const ownerName = computed( () =>authStore.ownerName); // 사용자 이름
+const userId = computed( () =>authStore.userId); // 사용자 이메일
+const role = computed( () =>authStore.role); // 사용자 역할 (ROLE_ADMIN, ROLE_SELLER)
+
+const handleLogout = () => {
+  authStore.setLogout();
+  router.push("/auth/login"); // 로그아웃 후 로그인 화면으로 이동
+};
 </script>
-
-<style scoped>
-
-</style>
