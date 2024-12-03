@@ -17,7 +17,7 @@
 <script setup>
 import { RouterView } from "vue-router";
 import Header from "./layout/Header.vue";
-import SideBar from "./layout/SideBar.vue";
+import SideBar from "./layout/sidbar/SideBar.vue";
 import Contents from "./layout/Contents.vue";
 </script>
 

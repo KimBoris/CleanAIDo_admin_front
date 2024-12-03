@@ -1,70 +1,53 @@
-import { defineStore } from 'pinia';
-import { ref, computed, toRef } from 'vue';
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
 
-const useAuthStore = defineStore('authStore', () => {
-    // 상태 정의
-    const accessToken = ref(localStorage.getItem('accessToken') || '');
-    const refreshToken = ref(localStorage.getItem('refreshToken'))
-    const role = ref(localStorage.getItem('userRole') || 'user');
-    const userId = ref(localStorage.getItem('userId') || '');
+export const useAuthStore = defineStore("authStore", () => {
+    const accessToken = ref(localStorage.getItem("accessToken") || "");
+    const refreshToken = ref(localStorage.getItem("refreshToken") || "");
+    const role = ref(localStorage.getItem("userRole") || "");
+    const userId = ref(localStorage.getItem("userId") || "");
+    const ownerName = ref(localStorage.getItem("ownerName") || "");
+    const error = ref(null);
 
-    const userRole = toRef(role);
-    const memberId = toRef(userId);
-
-    // 인증 상태 확인
     const isAuthenticated = computed(() => !!accessToken.value);
 
-    // 로그인 메서드
-    const login = (accessToken, userRole, email) => {
-        accessToken.value = accessToken;
-        refreshToken.value = a
-        role.value = userRole;
-        userId.value = email;
+    const setLogin = async (response) => {
+        try {
 
-        // localStorage에 저장하여 페이지 새로고침 후에도 상태 유지
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('userRole', userRole);
-        localStorage.setItem('userId', email);
+            accessToken.value = response.data.accessToken;
+            refreshToken.value = response.data.refreshToken;
+            role.value = response.data.adminRole ? "ROLE_ADMIN" : "ROLE_SELLER";
+            userId.value = response.data.userId;
+            ownerName.value = response.data.ownerName;
+            error.value = null;
+
+            localStorage.setItem("accessToken", accessToken.value);
+            localStorage.setItem("refreshToken", refreshToken.value);
+            localStorage.setItem("userRole", role.value);
+            localStorage.setItem("userId", userId.value);
+            localStorage.setItem("ownerName", ownerName.value);
+
+        } catch (err) {
+            error.value = err.message || "로그인 실패";
+        }
     };
 
-    // 로그아웃 메서드
-    const logout = () => {
-        accessToken.value = '';
-        role.value = '';
-        userId.value = '';
+    const setLogout = () => {
+        accessToken.value = "";
+        refreshToken.value = "";
+        role.value = "";
+        userId.value = "";
+        ownerName.value = "";
+        error.value = null;
 
-        // localStorage에서 인증 정보 삭제
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userRole');
-        localStorage.removeItem('userId');
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("ownerName");
+
     };
 
-    // 계산된 값 (필요한 경우 사용)
-    const computedRole = computed(() => {
-        if(!localStorage.getItem('userRole')){
-            return null
-        }
+    return { accessToken, refreshToken, role, userId, ownerName, error, isAuthenticated, setLogin, setLogout };
 
-        if(localStorage.getItem('userRole') && ! role.value){
-            role.value = localStorage.getItem('userRole')
-            return localStorage.getItem('userRole')
-        }
-
-        return userRole;
-    });
-    const computedUserId = computed(() => {
-        if(!localStorage.getItem('userId')){
-            return null
-        }
-
-        if(localStorage.getItem('userId') && ! userId.value){
-            userId.value = localStorage.getItem('userId')
-            return localStorage.getItem('userId')
-        }
-
-        return memberId;
-    });
-
-    return { accessToken, role, userId, isAuthenticated, login, logout, computedRole, computedUserId }
-})
-export default useAuthStore;
+});
