@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <UserListComponent></UserListComponent>
+    <UserListComponent/>
   </div>
 </template>
 

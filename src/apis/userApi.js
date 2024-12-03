@@ -7,6 +7,23 @@ const BUSINESS_AUTH_API_SERVICE_KEY = import.meta.env.VITE_BUSINESS_AUTH_API_SER
 const OCR_API_SECRET_KEY = import.meta.env.VITE_OCR_API_SECRET_KEY;
 const OCR_API_PRIMARY_KEY = import.meta.env.VITE_OCR_API_PRIMARY_KEY;
 
+export const getUserList = async (page, size, type = '', keyword = '') => {
+    try {
+        const response = await axios.get(`${host}/list`, {
+            params: {
+                page,
+                size,
+                type,
+                keyword
+            }
+        });
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching user list:', error);
+        return null;
+    }
+};
 // 사용자 등록
 export const postUserOneWithFile = async (formData) => {
     try {
