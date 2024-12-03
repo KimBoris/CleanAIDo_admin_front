@@ -1,8 +1,12 @@
 <template>
 
+  <div>
+    <UserListComponent/>
+  </div>
 </template>
 
 <script setup>
+import UserListComponent from "../../components/user/UserListComponent.vue";
 
 </script>
 

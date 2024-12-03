@@ -7,6 +7,23 @@ const BUSINESS_AUTH_API_SERVICE_KEY = import.meta.env.VITE_BUSINESS_AUTH_API_SER
 const OCR_API_SECRET_KEY = import.meta.env.VITE_OCR_API_SECRET_KEY;
 const OCR_API_PRIMARY_KEY = import.meta.env.VITE_OCR_API_PRIMARY_KEY;
 
+export const getUserList = async (page, size, type = '', keyword = '') => {
+    try {
+        const response = await axios.get(`${host}/list`, {
+            params: {
+                page,
+                size,
+                type,
+                keyword
+            }
+        });
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching user list:', error);
+        return null;
+    }
+};
 // 사용자 등록
 export const postUserOneWithFile = async (formData) => {
     try {
@@ -28,7 +45,7 @@ export const postOcrImage = async (formData) => {
 
         const res = await axios
             .post(`https://ohcomdxe9l.apigw.ntruss.com/custom/v1/36396/99757e0871467a2eaee9486def3ce8f4203a99b9d73d28b3`
-        + `6e9ab1b36883bdfd/infer`, formData, {
+                + `6e9ab1b36883bdfd/infer`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'X-OCR-SECRET': OCR_API_SECRET_KEY,
@@ -86,7 +103,7 @@ export const postCheckUserId = async (userId) => {
         console.log(userId);
         console.error("ID 중복체크 실패", error.response?.data || error.message);
         throw error;
-        
+
     }
 }
 
@@ -117,4 +134,3 @@ export const getUserRequestList = async (page, size) => {
     }
 
 }
-    

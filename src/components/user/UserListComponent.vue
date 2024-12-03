@@ -39,23 +39,23 @@
               <table class="table table-hover">
                 <thead>
                 <tr>
-                  <th style="width: 10%;">ID</th>
+                  <th style="width: 35%;">ID</th>
                   <th style="width: 15%;">이름</th>
                   <th style="width: 20%;">이메일</th>
                   <th style="width: 10%;">가입일</th>
                   <th style="width: 10%;">상태</th>
-                  <th style="width: 35%;">등록일/수정일</th>
+                  <th style="width: 10%;">등록일/수정일</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="user in userList.dtoList" :key="user.id" class="pe-auto">
-                  <td class="cursor-pointer">{{ user.id }}</td>
-                  <td>{{ user.username }}</td>
-                  <td>{{ user.email }}</td>
-                  <td>{{ user.createdAt }}</td>
-                  <td>{{ user.status }}</td>
+                <tr v-for="user in userList.dtoList" :key="user.userId" class="pe-auto">
+                  <td class="cursor-pointer">{{ user.userId }}</td>
+                  <td>{{ user.ownerName }}</td>
+                  <td>{{ user.businessName }}</td>
+                  <td>{{ user.businessLicenseNum }}</td>
+                  <td>{{ user.businessStatus }}</td>
                   <td>
-                    {{ user.createdAt }} / {{ user.updatedAt }}
+                    {{ user.createDate }} / {{ user.updateDate }}
                   </td>
                 </tr>
                 </tbody>
@@ -84,10 +84,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useAuthStore } from '../../stores/useAuthStore'; // Pinia 스토어 가져오기
-import { getUserList } from '../../apis/userApi.js'; // 사용자 목록 API
-import { useRoute, useRouter } from 'vue-router';
+import {ref, onMounted, computed} from 'vue';
+import {useAuthStore} from '../../stores/useAuthStore'; // Pinia 스토어 가져오기
+import {getUserList} from '../../apis/userApi.js'; // 사용자 목록 API
+import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
 import LoadingComponent from "../common/LoadingComponent.vue";
 
@@ -119,11 +119,19 @@ const searchData = ref({
 
 // 페이지 데이터 가져오기
 const fetchUserList = async (page, type = '', keyword = '') => {
-  isLoading.value = true; // 로딩 시작
+  isLoading.value = true;
   const data = await getUserList(page || 1, 10, type, keyword);
+
+  // 날짜 포맷 변환 (LocalDateTime -> YYYY-MM-DD HH:mm:ss)
+  data.dtoList.forEach(user => {
+    if (user.createDate) user.createDate = new Date(user.createDate).toLocaleString();
+    if (user.updateDate) user.updateDate = new Date(user.updateDate).toLocaleString();
+  });
+
   userList.value = data;
   isLoading.value = false;
 };
+
 
 // 페이지네이션 클릭 시 이벤트 처리
 const handleClickPage = (pageNum) => {
