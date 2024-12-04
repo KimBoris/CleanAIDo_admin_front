@@ -36,3 +36,14 @@ export const getReviewList = async (page, size, type = '', keyword = '') => {
     }
 };
 
+export const getReview = async (rno) => {
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken;
+    const res = await axios.get(`${host}/read/${rno}`,{
+        headers:{Authorization: `Bearer ${accessToken}`,
+        },
+    })
+    return res.data;
+
+};
+
