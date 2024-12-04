@@ -3,7 +3,6 @@ import {useAuthStore} from "../stores/useAuthStore.js";
 
 const host = "http://localhost:8080/api/v1/product";
 
-// QnA 리스트 가져오기 (모든 질문 리스트)
 export const getProductList = async (page, size, type='', keyword='') => {
     const authStore = useAuthStore();
     const accessToken = authStore.accessToken
@@ -55,7 +54,7 @@ export const postProduct = async (formData) =>{
     return res.data;
 }
 
-// QnA 리스트 가져오기 (모든 질문 리스트)
+
 export const getProductById = async (pno) => {
     const authStore = useAuthStore();
     const accessToken = authStore.accessToken
@@ -70,10 +69,12 @@ export const getProductById = async (pno) => {
     return res.data;
 };
 
-export const updateProduct = async (formData)=>{
+export const updateProduct = async (formData, pno)=>{
     const authStore = useAuthStore();
     const accessToken = authStore.accessToken
-    const res = await axios.put(`${host}`, formData,{
+    console.log("업데이트를 실행합니다")
+    console.log(pno)
+    const res = await axios.put(`${host}/seller/${pno}`, formData,{
         headers: {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'multipart/form-data'
