@@ -48,8 +48,8 @@
                   :key="product.pno"
                   class="pe-auto cursor-pointer"
                   @click="goToEditPage(product.pno)">
-                <td class="cursor-pointer">{{ product.pcode }}</td>
                 <td v-if="role === 'ROLE_ADMIN'">{{ product.storeName }}</td>
+                <td class="cursor-pointer">{{ product.pcode }}</td>
                 <td>{{ product.pname }}</td>
                 <td>{{ product.price }}</td>
                 <td>{{ product.quantity }}</td>
@@ -90,6 +90,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script setup>
@@ -105,7 +106,7 @@ const router = useRouter();
 
 // AuthStore 사용
 const authStore = useAuthStore();
-const role = computed(() => authStore.role); // role을 Pinia에서 가져옴
+const role = computed(() => authStore.role);
 
 // 리스트 데이터 관리
 const productList = ref({
@@ -229,4 +230,5 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+
 </style>
