@@ -107,6 +107,7 @@ export const postCheckUserId = async (userId) => {
     }
 }
 
+// 입점요청 리스트
 export const getUserRequestList = async (page, size) => {
 
     const authStore = useAuthStore();
