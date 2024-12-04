@@ -25,10 +25,10 @@ export const getUserList = async (page, size, type = '', keyword = '') => {
 
     try {
         const res = await axios.get(`${host}/list`, {
+            params,
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
-            params,
         });
 
         console.log(res);
