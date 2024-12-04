@@ -1,29 +1,46 @@
 import axios from "axios";
 import {useAuthStore} from "../stores/useAuthStore.js";
 
-const host = "http://localhost:8080/api/v1/admin/user";
+
+const host = "http://localhost:8080/api/v1/user";
 
 const BUSINESS_AUTH_API_SERVICE_KEY = import.meta.env.VITE_BUSINESS_AUTH_API_SERVICE_KEY;
 const OCR_API_SECRET_KEY = import.meta.env.VITE_OCR_API_SECRET_KEY;
 const OCR_API_PRIMARY_KEY = import.meta.env.VITE_OCR_API_PRIMARY_KEY;
 
 export const getUserList = async (page, size, type = '', keyword = '') => {
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken;
+    const params = {
+        page: page || 1,
+        size: size || 10,
+    };
+
+    if (keyword) {
+        if (type) {
+            params.keyword = keyword;
+            params.searchType = type;
+        }
+    }
+
     try {
-        const response = await axios.get(`${host}/list`, {
-            params: {
-                page,
-                size,
-                type,
-                keyword
-            }
+        const res = await axios.get(`${host}/list`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            params,
         });
-        console.log(response.data);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching user list:', error);
-        return null;
+
+        console.log(res);
+        return res.data;
+    }
+    catch (error)
+    {
+        console.error("User 데이터를 못들고 왔어여", error);
+        throw error;
     }
 };
+
 // 사용자 등록
 export const postUserOneWithFile = async (formData) => {
     try {
