@@ -29,7 +29,7 @@
             </thead>
             <tbody>
               <tr v-for="userRequest in userRequestList.dtoList" :key="userRequest.userId" class="pe-auto">
-                <td class="cursor-pointer" @click="">
+                <td class="cursor-pointer" @click="goToReadPage(userRequest.userId)">
                   <i class="fa fa-user-o"></i>
                   {{ userRequest.userId }}</td>
                 <td>{{ userRequest.storeName }}</td>
@@ -75,6 +75,7 @@
   import Share from "../../layout/Share.vue";
   import LoadingComponent from "../common/LoadingComponent.vue";
   import {useRoute, useRouter} from "vue-router";
+  import user from "../../routers/user.js";
 
   const isLoading = ref(false);
   const route = useRoute();
@@ -96,6 +97,7 @@
     current: 1
   });
 
+  // 데이터 호출 함수
   const fetchUserRequestList = async (page) => {
     isLoading.value = true;
     const data = await getUserRequestList(page, 10);
@@ -110,6 +112,12 @@
     fetchUserRequestList(pageNum, );
   };
 
+  // userId 클릭 시 read로 이동
+  const goToReadPage = (userId) => {
+    router.push({path: `/user/request/${userId}`});
+  }
+
+  // 페이지가 마운팅될 때 데이터 호출
   onMounted(() => {
     fetchUserRequestList(route.query.page || 1)
   })
