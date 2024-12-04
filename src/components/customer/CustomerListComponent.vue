@@ -25,8 +25,8 @@
               <div class="input-group w-auto">
                 <select style="height: 36px;" v-model="selectedOption">
                   <option value="" disabled>------</option>
-                  <option value="userName">대표자명</option>
-                  <option value="storeName">스토어명</option>
+                  <option value="customerId">아이디</option>
+                  <option value="customerName">이름</option>
                 </select>
                 <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
                 <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button"
@@ -40,40 +40,40 @@
               <table class="table table-hover">
                 <thead>
                 <tr>
-                  <th style="width: 5%;">ID</th>
-                  <th style="width: 10%;">스토어명</th>
-                  <th style="width: 5%;">상태</th>
-                  <th style="width: 5%;">사업자명</th>
-                  <th style="width: 5%;">대표자명</th>
-                  <th style="width: 10%;">연락처</th>
-                  <th style="width: 10%;">가입일</th>
+                  <th style="width: 10%;">고객 아이디</th>
+                  <th style="width: 10%;">고객명</th>
+                  <th style="width: 5%;">생년월일</th>
+                  <th style="width: 5%;">생성일자</th>
+                  <th style="width: 5%;">전화번호</th>
+                  <th style="width: 10%;">주소</th>
+
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="user in userList.dtoList" :key="user.userId" class="pe-auto">
-                  <td class="cursor-pointer">{{ user.userId }}</td>
-                  <td>{{ user.storeName }}</td>
-                  <td>{{ user.businessStatus }}</td>
-                  <td>{{ user.businessName }}</td>
-                  <td>{{ user.ownerName }}</td>
-                  <td>{{ user.contactNumber }}</td>
-                  <td>{{ user.createDate }}</td>
+                <tr v-for="customer in customerList.dtoList" :key="customer.customerId" class="pe-auto">
+                  <td class="cursor-pointer">{{ customer.customerId }}</td>
+                  <td>{{ customer.customerName }}</td>
+                  <td>{{ customer.birthDate }}</td>
+                  <td>{{ customer.createDate}}</td>
+                  <td>{{ customer.phoneNumber }}</td>
+                  <td>{{ customer.address }}</td>
+
 
                 </tr>
                 </tbody>
               </table>
               <div class="d-flex justify-content-center mt-5">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="userList.prev"
-                          @click="handleClickPage(userList.prevPage)">
+                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="customerList.prev"
+                          @click="handleClickPage(customerList.prevPage)">
                     이전
                   </button>
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-for="page in userList.pageNumList"
+                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-for="page in customerList.pageNumList"
                           :key="page" @click="handleClickPage(page)">
                     {{ page }}
                   </button>
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="userList.next"
-                          @click="handleClickPage(userList.nextPage)">
+                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="customerList.next"
+                          @click="handleClickPage(customerList.nextPage)">
                     다음
                   </button>
                 </div>
@@ -89,10 +89,10 @@
 <script setup>
 import {ref, onMounted, computed} from 'vue';
 import {useAuthStore} from '../../stores/useAuthStore';
-import {getUserList} from '../../apis/userApi.js';
 import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
 import LoadingComponent from "../common/LoadingComponent.vue";
+import {getCustomerList} from "../../apis/customerAPI.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -100,7 +100,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const role = computed(() => authStore.role);
 
-const userList = ref({
+const customerList = ref({
   dtoList: [],
   pageNumList: [],
   pageRequestDTO: {
@@ -118,40 +118,42 @@ const searchData = ref({
   keyword: ''
 });
 
-const fetchUserList = async (page, type = '', keyword = '') => {
+const fetchCustomerList = async (page, type = '', keyword = '') => {
   isLoading.value = true;
-  const data = await getUserList(page || 1, 10, type, keyword);
+  const data = await getCustomerList(page || 1, 10, type, keyword);
 
-  data.dtoList.forEach(user => {
-    if (user.createDate) user.createDate = new Date(user.createDate).toLocaleString();
-    if (user.updateDate) user.updateDate = new Date(user.updateDate).toLocaleString();
+  data.dtoList.forEach(customer => {
+    if (customer.createDate) customer.createDate = new Date(customer.createDate).toLocaleString();
+    if (customer.updateDate) customer.updateDate = new Date(customer.updateDate).toLocaleString();
   });
 
-  userList.value = data;
+
+  customerList.value = data;
+  console.log("data = " + data)
   isLoading.value = false;
 };
 
 
 const handleClickPage = (pageNum) => {
   router.push({query: {page: pageNum, type: searchData.value.type, keyword: searchData.value.keyword}});
-  fetchUserList(pageNum, searchData.value.type, searchData.value.keyword);
+  fetchCustomerList(pageNum, searchData.value.type, searchData.value.keyword);
 };
 
 
 onMounted(() => {
   searchData.value.type = route.query.type || '';
   searchData.value.keyword = route.query.keyword || '';
-  fetchUserList(route.query.page || 1, searchData.value.type, searchData.value.keyword);
+  fetchCustomerList(route.query.page || 1, searchData.value.type, searchData.value.keyword);
 });
 
 const handleSearch = () => {
   searchData.value.type = selectedOption.value;
   searchData.value.keyword = keyword.value;
   router.push({
-    path: '/user/list',
+    path: '/customer/list',
     query: {page: 1, type: searchData.value.type, keyword: searchData.value.keyword}
   });
-  fetchUserList(1, searchData.value.type, searchData.value.keyword);
+  fetchCustomerList(1, searchData.value.type, searchData.value.keyword);
 };
 </script>
 
