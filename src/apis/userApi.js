@@ -2,7 +2,7 @@ import axios from "axios";
 import {useAuthStore} from "../stores/useAuthStore.js";
 
 
-const host = "http://localhost:8080/api/v1/user";
+const host = "http://localhost:8080/api/v1/admin/user";
 
 const BUSINESS_AUTH_API_SERVICE_KEY = import.meta.env.VITE_BUSINESS_AUTH_API_SERVICE_KEY;
 const OCR_API_SECRET_KEY = import.meta.env.VITE_OCR_API_SECRET_KEY;
@@ -152,4 +152,26 @@ export const getUserRequestList = async (page, size) => {
     }
 
 }
-//중복제거 확인
+
+export const getUserOne = async (userId) => {
+
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken
+
+    try {
+
+        const res = await axios.get(`${host}/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
+
+        return res;
+
+    } catch (error) {
+
+        console.error("판매자 조회 호출 실패", error.response?.data || error.message);
+        throw error;
+
+    }
+}
