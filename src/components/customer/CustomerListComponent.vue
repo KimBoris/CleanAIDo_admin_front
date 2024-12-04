@@ -25,8 +25,8 @@
               <div class="input-group w-auto">
                 <select style="height: 36px;" v-model="selectedOption">
                   <option value="" disabled>------</option>
-                  <option value="userId">아이디</option>
-                  <option value="userName">이름</option>
+                  <option value="userName">대표자명</option>
+                  <option value="storeName">스토어명</option>
                 </select>
                 <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
                 <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button"
