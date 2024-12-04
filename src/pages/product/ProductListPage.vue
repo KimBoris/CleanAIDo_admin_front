@@ -5,8 +5,7 @@
 </template>
 
 <script setup>
-
-import ProductListComponent from "../../components/product/ProductListComponent.vue";
+  import ProductListComponent from "../../components/product/ProductListComponent.vue";
 </script>
 
 <style scoped>
