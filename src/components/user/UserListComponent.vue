@@ -25,8 +25,8 @@
               <div class="input-group w-auto">
                 <select style="height: 36px;" v-model="selectedOption">
                   <option value="" disabled>------</option>
-                  <option value="userId">아이디</option>
-                  <option value="userName">이름</option>
+                  <option value="UserId">아이디</option>
+                  <option value="StoreName">이름</option>
                 </select>
                 <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
                 <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button"
@@ -174,18 +174,18 @@ button {
   margin: 0 !important;
 }
 
-.product-info {
+.review-info {
   margin-bottom: 20px;
 }
 
-.product-info p {
+.review-info p {
   font-size: 1rem;
   color: #555;
   margin-top: 25px;
   margin-bottom: 20px;
 }
 
-.product-info strong {
+.review-info strong {
   color: #222;
 }
 
@@ -198,14 +198,14 @@ button {
   margin-top: 8px;
 }
 
-.product-edit {
+.review-edit {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 20px;
 }
 
-.product-edit textarea {
+.review-edit textarea {
   flex-grow: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -213,7 +213,7 @@ button {
   resize: vertical;
 }
 
-.product-edit button {
+.review-edit button {
   background-color: #007bff;
   color: #fff;
   padding: 8px 16px;
