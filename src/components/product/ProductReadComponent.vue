@@ -2,23 +2,19 @@
   <div class="container mt-4">
     <div class="card p-4 shadow">
       <h2 class="text-center mb-4">상품 수정</h2>
-
-      <!-- 등록된 카테고리 목록 -->
       <div class="mb-4">
         <label class="input-group-text w-25" for="category">카테고리</label>
-        <div class="d-flex align-items-center m-1 p-1 border rounded"
-             style="height: auto; width: 800px; flex-wrap: wrap;">
-          <div v-for="(category, index) in categoryData.categoryList" :key="category.cno"
-               class="d-flex justify-content-between align-items-center m-1 p-1 border rounded"
-               style="font-size: 0.6rem; height: auto; max-width: 100%;">
-            <div class="text-truncate" style="max-width: 60%">{{ category.parentName }} / {{ category.cname }}</div>
-            <button class="btn btn-danger btn-sm" @click="handleRemoveCategory(index)" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">X</button>
-          </div>
+        <br/>
+        <!-- 등록된 카테고리 -->
+        <div v-if="selectedCategory.category" class="d-flex justify-content-between align-items-center m-1 p-1 border rounded">
+          <div class="text-truncate">{{ selectedCategory.category.parentName }} / {{ selectedCategory.category.cname }}</div>
+          <button class="btn btn-danger btn-sm" @click="handleRemoveCategory" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">X</button>
         </div>
+        <div v-else class="text-muted">카테고리를 선택하세요</div>
 
         <!-- 검색 기능 -->
         <div class="input-group mb-3">
-          <input class="form-control w-25" type="text" v-model="searchData.keyword" placeholder="카테고리를 검색하세요" />
+          <input class="form-control w-25" type="text" id="keyword" v-model="searchData.keyword" placeholder="카테고리를 검색하세요" />
           <button class="btn btn-primary" @click="handleSearch">검색</button>
         </div>
 
@@ -59,6 +55,14 @@
         <input type="number" id="quantity" class="form-control" v-model="editData.quantity" placeholder="수량을 입력하세요">
       </div>
       <div class="input-group mb-3">
+        <label class="input-group-text w-25" for="ptags">사용처</label>
+        <input type="text" id="ptags" class="form-control" v-model="editData.puseCase" placeholder="사용처를 입력하세요">
+      </div>
+      <div class="input-group mb-3">
+        <label class="input-group-text w-25" for="ptags">사용물품</label>
+        <input type="text" id="ptags" class="form-control" v-model="editData.pusedItem" placeholder="사용물품 입력하세요">
+      </div>
+      <div class="input-group mb-3">
         <label class="input-group-text w-25" for="ptags">태그</label>
         <input type="text" id="ptags" class="form-control" v-model="editData.ptags" placeholder="태그를 입력하세요">
       </div>
@@ -72,42 +76,46 @@
           <input class="form-check-input" type="radio" id="soon" value="soon" v-model="editData.pstatus">
           <label class="form-check-label" for="soon">출시예정</label>
         </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="stop" value="stop" v-model="editData.pstatus">
+          <label class="form-check-label" for="soon">판매중지</label>
+        </div>
       </div>
       <div class="input-group mb-3" v-if="editData.pstatus === 'soon'">
         <label class="input-group-text w-25" for="releasedAt">출시예정일</label>
         <input type="datetime-local" id="releasedAt" class="form-control" v-model="editData.releasedAt">
       </div>
 
-      <!-- 이미지 수정 및 업로드 -->
-      <div class="mb-4">
-        <label class="input-group-text w-25" for="imageFiles">이미지 수정</label>
-        <input type="file" id="imageFiles" class="form-control" multiple @change="handleImageUpload('imageFiles', $event)">
-        <div v-if="editData.imageFiles && editData.imageFiles.length > 0" class="mt-2">
-          <div v-for="(image, index) in editData.imageFiles" :key="index" class="d-inline-block me-2">
-            <img :src="image" alt="이미지 미리보기" width="100" height="100" class="border rounded">
-          </div>
-        </div>
-      </div>
+<!--      &lt;!&ndash; 이미지 수정 및 업로드 &ndash;&gt;-->
+<!--      <div class="mb-4">-->
+<!--        <label class="input-group-text w-25" for="imageFiles">이미지 수정</label>-->
+<!--        <input type="file" id="imageFiles" class="form-control" multiple @change="handleImageUpload('imageFiles', $event)">-->
+<!--        <div v-if="files.value.imageFiles && files.value.imageFiles.length > 0" class="mt-2">-->
+<!--          <div v-for="(image, index) in files.value.imageFiles" :key="index" class="d-inline-block me-2">-->
+<!--            <img :src="image" alt="이미지 미리보기" width="100" height="100" class="border rounded">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div class="mb-4">
-        <label class="input-group-text w-25" for="detailImageFiles">상세 이미지 수정</label>
-        <input type="file" id="detailImageFiles" class="form-control" multiple @change="handleImageUpload('detailImageFiles', $event)">
-        <div v-if="editData.detailImageFiles && editData.detailImageFiles.length > 0" class="mt-2">
-          <div v-for="(image, index) in editData.detailImageFiles" :key="index" class="d-inline-block me-2">
-            <img :src="image" alt="상세 이미지 미리보기" width="100" height="100" class="border rounded">
-          </div>
-        </div>
-      </div>
+<!--      <div class="mb-4">-->
+<!--        <label class="input-group-text w-25" for="detailImageFiles">상세 이미지 수정</label>-->
+<!--        <input type="file" id="detailImageFiles" class="form-control" multiple @change="handleImageUpload('detailImageFiles', $event)">-->
+<!--        <div v-if="files.value.detailImageFiles && files.value.detailImageFiles.length > 0" class="mt-2">-->
+<!--          <div v-for="(image, index) in files.value.detailImageFiles" :key="index" class="d-inline-block me-2">-->
+<!--            <img :src="image" alt="상세 이미지 미리보기" width="100" height="100" class="border rounded">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div class="mb-4">
-        <label class="input-group-text w-25" for="usageImageFiles">사용 이미지 수정</label>
-        <input type="file" id="usageImageFiles" class="form-control" multiple @change="handleImageUpload('usageImageFiles', $event)">
-        <div v-if="editData.usageImageFiles && editData.usageImageFiles.length > 0" class="mt-2">
-          <div v-for="(image, index) in editData.usageImageFiles" :key="index" class="d-inline-block me-2">
-            <img :src="image" alt="사용 이미지 미리보기" width="100" height="100" class="border rounded">
-          </div>
-        </div>
-      </div>
+<!--      <div class="mb-4">-->
+<!--        <label class="input-group-text w-25" for="usageImageFiles">사용 이미지 수정</label>-->
+<!--        <input type="file" id="usageImageFiles" class="form-control" multiple @change="handleImageUpload('usageImageFiles', $event)">-->
+<!--        <div v-if="files.value.usageImageFiles && files.value.usageImageFiles.length > 0" class="mt-2">-->
+<!--          <div v-for="(image, index) in files.value.usageImageFiles" :key="index" class="d-inline-block me-2">-->
+<!--            <img :src="image" alt="사용 이미지 미리보기" width="100" height="100" class="border rounded">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <!-- 수정 버튼 -->
       <button class="btn btn-primary w-100 mt-3" type="button" @click="handleClickUpdate">수정하기</button>
@@ -124,6 +132,7 @@ import { getProductById, updateProduct, getCategoryList } from "../../apis/produ
 const router = useRouter();
 const route = useRoute();
 const error = ref(null);
+const pno = route.params.pno
 
 const editData = ref({
   pname: '',
@@ -138,8 +147,8 @@ const editData = ref({
   usageImageFiles: []
 });
 
-const categoryData = ref({
-  categoryList: [],
+const selectedCategory = ref({
+  category: '',
 });
 
 const searchData = ref({
@@ -150,25 +159,46 @@ const categoryList = ref({
   dtoList: [],
 });
 
+const files = ref({
+  imageFiles: [],
+  detailImageFiles: [],
+  usageImageFiles: []
+})
+
 // 상품 데이터 불러오기
 const fetchProductData = async () => {
-  const productId = route.params.pno;
-  const product = await getProductById(productId);
+  try {
+    console.log(pno);
+    const product = await getProductById(pno);
+    console.log(product);
 
-  editData.value = {
-    pname: product.pno,
-    price: product.price,
-    pcode: product.pcode,
-    quantity: product.quantity,
-    pstatus: product.pstatus,
-    releasedAt: product.releasedAt,
-    ptags: product.tags,
-    imageFiles: product.imageFiles || [],
-    detailImageFiles: product.detailImageFiles || [],
-    usageImageFiles: product.usageImageFiles || []
-  };
+    // editData 초기화
+    editData.value = {
+      pname: product.pname || '',
+      price: product.price || '',
+      pcode: product.pcode || '',
+      quantity: product.quantity || '',
+      pstatus: product.pstatus || '판매중',
+      releasedAt: product.releasedAt || '',
+      puseCase: product.puseCase || '',
+      pusedItem: product.pusedItem || '',
+      ptags: product.tags || '',
+    };
 
-  categoryData.value.categoryList = product.categories || [];
+    // files 초기화
+    files.value = {
+      imageFiles: product.imageFiles || [],
+      detailImageFiles: product.detailImageFiles || [],
+      usageImageFiles: product.usageImageFiles || [],
+    };
+
+    console.log(files.value.imageFiles);
+
+    selectedCategory.value.category = product.category || null;
+  } catch (error) {
+    console.error("Failed to fetch product data:", error);
+    error.value = "상품 데이터를 불러오는 데 실패했습니다.";
+  }
 };
 
 // 카테고리 데이터 가져오기
@@ -177,18 +207,18 @@ const fetchCateGoryList = async (keyword = '') => {
 };
 
 const handleSearch = () => {
+  searchData.value.keyword = keyword.value;
   fetchCateGoryList(searchData.value.keyword);
 };
 
+// 카테고리 선택
 const handleRegistCategory = (category) => {
-  const exists = categoryData.value.categoryList.some((item) => item.cno === category.cno);
-  if (!exists) {
-    categoryData.value.categoryList.push(category);
-  }
+  selectedCategory.value.category = category;
 };
 
-const handleRemoveCategory = (index) => {
-  categoryData.value.categoryList.splice(index, 1);
+// 카테고리 제거
+const handleRemoveCategory = () => {
+  selectedCategory.value.category = null;
 };
 
 const handleImageUpload = (field, event) => {
@@ -208,17 +238,30 @@ const handleClickUpdate = async () => {
   formData.append('quantity', editData.value.quantity);
   formData.append('pstatus', editData.value.pstatus);
   formData.append('releasedAt', editData.value.releasedAt);
+  formData.append('puseCase', editData.value.puseCase);
+  formData.append('pusedItem', editData.value.pusedItem);
   formData.append('ptags', editData.value.ptags);
-
-  categoryData.value.categoryList.forEach(category => formData.append('categoryList', category.cno));
-
+  formData.append("categoryId", selectedCategory.value.category.cno);
   // 이미지 처리
-  editData.value.imageFiles.forEach((image) => formData.append('imageFiles', image));
-  editData.value.detailImageFiles.forEach((image) => formData.append('detailImageFiles', image));
-  editData.value.usageImageFiles.forEach((image) => formData.append('usageImageFiles', image));
+  if (files.value.imageFiles.length > 0) {
+    files.value.imageFiles.forEach(file => formData.append('imageFiles', file));
+  } else {
+    formData.append('imageFiles', new Blob([]));
+  }
+
+  if (files.value.detailImageFiles.length > 0) {
+    files.value.detailImageFiles.forEach(file => formData.append('detailImageFiles', file));
+  } else {
+    formData.append('detailImageFiles', new Blob([]));
+  }
+  if (files.value.usageImageFiles.length > 0) {
+    files.value.usageImageFiles.forEach(file => formData.append('usageImageFiles', file));
+  } else {
+    formData.append('usageImageFiles', new Blob([]));
+  }
 
   try {
-    await updateProduct(route.params.pno, formData);
+    await updateProduct(formData, pno);
     router.replace('/product/list');
   } catch (err) {
     error.value = err.response.data.message;
@@ -227,7 +270,6 @@ const handleClickUpdate = async () => {
 
 onMounted(() => {
   fetchProductData();
-  fetchCateGoryList();
 });
 </script>
 

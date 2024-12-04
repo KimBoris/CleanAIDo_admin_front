@@ -1,79 +1,88 @@
 <template>
-  <div>
-    <!-- 탭 메뉴 -->
-    <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
-      <div class="ms-auto">
-        <Share />
-      </div>
+  <!-- 탭 메뉴 -->
+  <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
+    <div class="ms-auto">
+      <Share/>
     </div>
-
-    <div>
-      <!--로딩창-->
-      <div v-if="isLoading" class="flex items-center justify-center h-screen">
-        <LoadingComponent></LoadingComponent>
-      </div>
-
-      <div v-else>
-        <!-- 리스트 -->
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title"></h4>
-            <p class="card-description"></p>
-
-            <div class="form-group d-flex justify-content-end">
-              <!-- 검색창 -->
-              <div class="input-group w-auto">
-                <select style="height: 36px;" v-model="selectedOption">
-                  <option value="" disabled>------</option>
-                  <option value="username">이름</option>
-                  <option value="email">이메일</option>
-                </select>
-                <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
-                <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
+  </div>
+  <div>
+    <!--로딩창-->
+    <div v-if="isLoading" class="flex items-center justify-center h-screen">
+      <LoadingComponent></LoadingComponent>
+    </div>
+    <div v-else>
+      <!-- 리스트 -->
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title"></h4>
+          <p class="card-description"></p>
+          <div class="form-group d-flex justify-content-end">
+            <!-- 검색창 -->
+            <div class="input-group w-auto">
+              <select style="height: 36px;" v-model="selectedOption">
+                <option value="" disabled>------</option>
+                <option value="pcode">코드</option>
+                <option value="pname">제품명</option>
+              </select>
+              <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
+              <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button" style="height: 36px;">
+                <i class="fa fa-search"></i>
+              </button>
             </div>
-
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                <tr>
-                  <th style="width: 10%;">ID</th>
-                  <th style="width: 15%;">이름</th>
-                  <th style="width: 20%;">이메일</th>
-                  <th style="width: 10%;">가입일</th>
-                  <th style="width: 10%;">상태</th>
-                  <th style="width: 35%;">등록일/수정일</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="user in userList.dtoList" :key="user.id" class="pe-auto">
-                  <td class="cursor-pointer">{{ user.id }}</td>
-                  <td>{{ user.username }}</td>
-                  <td>{{ user.email }}</td>
-                  <td>{{ user.createdAt }}</td>
-                  <td>{{ user.status }}</td>
-                  <td>
-                    {{ user.createdAt }} / {{ user.updatedAt }}
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-
-              <!-- 페이지네이션 -->
-              <div class="d-flex justify-content-center mt-5">
-                <div class="btn-group" role="group" aria-label="Basic example">
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="userList.prev" @click="handleClickPage(userList.prevPage)">
-                    이전
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-for="page in userList.pageNumList" :key="page" @click="handleClickPage(page)">
-                    {{ page }}
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="userList.next" @click="handleClickPage(userList.nextPage)">
-                    다음
-                  </button>
-                </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th style="width: 10%;">품번</th>
+                <th v-if="role === 'ROLE_ADMIN'" style="width: 10%;">스토어명</th> <!-- 조건부 렌더링 -->
+                <th style="width: 10%;">제품명</th>
+                <th style="width: 10%;">가격</th>
+                <th style="width: 10%;">수량</th>
+                <th style="width: 10%;">판매상태</th>
+                <th style="width: 40%;">등록일/수정일</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="product in productList.dtoList"
+                  :key="product.pno"
+                  class="pe-auto cursor-pointer"
+                  @click="goToEditPage(product.pno)">
+                <td v-if="role === 'ROLE_ADMIN'">{{ product.storeName }}</td>
+                <td class="cursor-pointer">{{ product.pcode }}</td>
+                <td>{{ product.pname }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{product.pstatus}}</td>
+                <td>
+                  {{product.createdAt}}
+                  /
+                  {{product.updatedAt}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <!-- 페이지네이션 -->
+            <div class="d-flex justify-content-center mt-5">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-if="productList.prev" @click="handleClickPage(productList.prevPage)"
+                >이전
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-for="page in productList.pageNumList" :key="page" @click="handleClickPage(page)"
+                >{{ page }}
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary py-3 px-3"
+                    v-if="productList.next" @click="handleClickPage(productList.nextPage)"
+                >다음
+                </button>
               </div>
             </div>
           </div>
@@ -81,13 +90,14 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useAuthStore } from '../../stores/useAuthStore'; // Pinia 스토어 가져오기
-import { getUserList } from '../../apis/userApi.js'; // 사용자 목록 API
-import { useRoute, useRouter } from 'vue-router';
+import {ref, onMounted, computed} from 'vue';
+import {useAuthStore} from '../../stores/useAuthStore'; // Pinia 스토어 가져오기
+import {getProductList} from '../../apis/productApi.js';
+import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
 import LoadingComponent from "../common/LoadingComponent.vue";
 
@@ -96,10 +106,10 @@ const router = useRouter();
 
 // AuthStore 사용
 const authStore = useAuthStore();
-const role = computed(() => authStore.role); // role을 Pinia에서 가져옴
+const role = computed(() => authStore.role);
 
 // 리스트 데이터 관리
-const userList = ref({
+const productList = ref({
   dtoList: [],
   pageNumList: [],
   pageRequestDTO: {
@@ -118,39 +128,41 @@ const searchData = ref({
 });
 
 // 페이지 데이터 가져오기
-const fetchUserList = async (page, type = '', keyword = '') => {
+const fetchProductList = async (page, type = '', keyword = '') => {
   isLoading.value = true; // 로딩 시작
-  const data = await getUserList(page || 1, 10, type, keyword);
-  userList.value = data;
+  const data = await getProductList(page || 1, 10, type, keyword);
+  productList.value = data;
   isLoading.value = false;
 };
 
 // 페이지네이션 클릭 시 이벤트 처리
 const handleClickPage = (pageNum) => {
   router.push({query: {page: pageNum, type: searchData.value.type, keyword: searchData.value.keyword}});
-  fetchUserList(pageNum, searchData.value.type, searchData.value.keyword);
+  fetchProductList(pageNum, searchData.value.type, searchData.value.keyword);
 };
 
 // 컴포넌트가 마운트될 때 리스트 가져오기
 onMounted(() => {
   searchData.value.type = route.query.type || '';
   searchData.value.keyword = route.query.keyword || '';
-  fetchUserList(route.query.page || 1, searchData.value.type, searchData.value.keyword);
+  fetchProductList(route.query.page || 1, searchData.value.type, searchData.value.keyword);
 });
 
 const handleSearch = () => {
   searchData.value.type = selectedOption.value;
   searchData.value.keyword = keyword.value;
   router.push({
-    path: '/user/list',
+    path: '/product/list',
     query: {page: 1, type: searchData.value.type, keyword: searchData.value.keyword}
   });
-  fetchUserList(1, searchData.value.type, searchData.value.keyword);
+  fetchProductList(1, searchData.value.type, searchData.value.keyword);
+};
+const goToEditPage = (pno) => {
+  router.push({ path: `/product/read/${pno}`});
 };
 </script>
 
 <style scoped>
-/* 스타일링은 필요에 맞게 수정 */
 textarea {
   width: 100%;
   padding: 10px;
@@ -170,6 +182,7 @@ button {
 }
 
 .product-info {
+
   margin-bottom: 20px;
 }
 
@@ -179,6 +192,7 @@ button {
   margin-top: 25px;
   margin-bottom: 20px;
 }
+
 
 .product-info strong {
   color: #222;
@@ -216,4 +230,5 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+
 </style>

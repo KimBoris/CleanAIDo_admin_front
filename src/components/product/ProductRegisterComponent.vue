@@ -5,16 +5,12 @@
       <div class="input-group mb-4">
         <label class="input-group-text w-25" for="category">카테고리</label>
         <br />
-        <!-- 등록된 카테고리 목록 -->
-        <div class="d-flex align-items-center m-1 p-1 border rounded"
-             style="height: auto; width: 800px; flex-wrap: wrap;">
-          <div v-for="(category, index) in categoryData.categoryList" :key="category.cno"
-               class="d-flex justify-content-between align-items-center m-1 p-1 border rounded"
-               style="font-size: 0.6rem; height: auto; max-width: 100%;">
-            <div class="text-truncate" style="max-width: 60%">{{ category.parentName }} / {{ category.cname }}</div>
-            <button class="btn btn-danger btn-sm" @click="handleRemoveCategory(index)" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">X</button>
-          </div>
+        <!-- 등록된 카테고리 -->
+        <div v-if="selectedCategory.category" class="d-flex justify-content-between align-items-center m-1 p-1 border rounded">
+          <div class="text-truncate">{{ selectedCategory.category.parentName }} / {{ selectedCategory.category.cname }}</div>
+          <button class="btn btn-danger btn-sm" @click="handleRemoveCategory" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">X</button>
         </div>
+        <div v-else class="text-muted">카테고리를 선택하세요</div>
 
         <!-- 검색 기능 -->
         <div class="input-group mb-3">
@@ -55,6 +51,14 @@
       <div class="input-group mb-3">
         <label class="input-group-text w-25" for="quantity">수량</label>
         <input type="number" id="quantity" class="form-control" v-model="registData.quantity" placeholder="수량을 입력하세요">
+      </div>
+      <div class="input-group mb-3">
+        <label class="input-group-text w-25" for="ptags">사용처</label>
+        <input type="text" id="ptags" class="form-control" v-model="registData.puseCase" placeholder="사용처를 입력하세요">
+      </div>
+      <div class="input-group mb-3">
+        <label class="input-group-text w-25" for="ptags">사용물품</label>
+        <input type="text" id="ptags" class="form-control" v-model="registData.pusedItem" placeholder="사용물품을 입력하세요">
       </div>
       <div class="input-group mb-3">
         <label class="input-group-text w-25" for="ptags">태그</label>
@@ -110,11 +114,13 @@ const registData = ref({
   quantity: '',
   pstatus: 'selling',
   releasedAt: '',
-  ptags: ''
+  ptags: '',
+  puseCase: '',
+  pusedItem: ''
 });
 
-const categoryData = ref({
-  categoryList: [],
+const selectedCategory = ref({
+  category: '',
 });
 
 const searchData = ref({
@@ -138,35 +144,18 @@ const fetchCateGoryList = async (keyword = '') => {
 
 const handleSearch = () => {
   searchData.value.keyword = keyword.value;
-  router.push({
-    path: '/product/register',
-    query: {keyword: searchData.value.keyword}
-  });
   fetchCateGoryList(searchData.value.keyword);
 };
 
+// 카테고리 선택
 const handleRegistCategory = (category) => {
-  // 카테고리 리스트에 이미 존재하는지 확인
-  const exists = categoryData.value.categoryList.some(
-      (item) => item.cno === category.cno
-  );
-
-  // 중복이 아닐 때만 push
-  if (!exists) {
-    categoryData.value.categoryList.push(category);
-    console.log("enroll clear");
-  } else {
-    console.log("Category already exists in the list");
-  }
-  console.log(categoryData.value.categoryList);
+  selectedCategory.value.category = category;
 };
 
-const handleRemoveCategory = (index) => {
-  categoryData.value.categoryList.splice(index, 1);
-  console.log("Category removed");
-  console.log(categoryData.value.categoryList);
+// 카테고리 제거
+const handleRemoveCategory = () => {
+  selectedCategory.value.category = null;
 };
-
 
 watch(() => registData.value.pstatus, (newStatus) => {
   if (newStatus === 'selling') {
@@ -192,14 +181,11 @@ const handleClickRegister = async () => {
   formData.append('quantity', registData.value.quantity);
   formData.append('pstatus', registData.value.pstatus);
   formData.append('releasedAt', registData.value.releasedAt);
+  formData.append('puseCase', registData.value.puseCase);
+  formData.append('pusedItem', registData.value.pusedItem);
   formData.append('ptags', registData.value.ptags);
   formData.append('sellerId', "phj");
-
-  if (categoryData.value.categoryList.length > 0) {
-    categoryData.value.categoryList.forEach(category => formData.append('categoryList', category.cno));
-  } else {
-    formData.append('categoryList', new Blob([]));
-  }
+  formData.append("categoryId", selectedCategory.value.category.cno);
 
   if (files.value.imageFiles.length > 0) {
     files.value.imageFiles.forEach(file => formData.append('imageFiles', file));
