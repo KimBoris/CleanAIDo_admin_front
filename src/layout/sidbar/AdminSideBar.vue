@@ -48,6 +48,7 @@
           <i class="menu-icon mdi mdi-package-variant"></i>
           <RouterLink to="/product/list" class="menu-title">상품 조회</RouterLink>
         </a>
+        <RouterLink to="/category" class="menu-title">카테고리 관리</RouterLink>
       </li>
     </ul>
   </nav>
