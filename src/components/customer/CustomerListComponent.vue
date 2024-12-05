@@ -26,7 +26,7 @@
                 <select style="height: 36px;" v-model="selectedOption">
                   <option value="" disabled>------</option>
                   <option value="customerId">아이디</option>
-                  <option value="customerName">이름</option>
+                  <option value="customerName">고객명</option>
                 </select>
                 <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
                 <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button"
@@ -129,7 +129,6 @@ const fetchCustomerList = async (page, type = '', keyword = '') => {
 
 
   customerList.value = data;
-  console.log("data = " + data)
   isLoading.value = false;
 };
 
