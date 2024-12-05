@@ -1,4 +1,13 @@
 <template>
+  <div v-if="isModalOpen">
+    <ModalComponent
+        title="처리 완료"
+        @close="closeModal"
+    >
+      입점이 승인되었습니다.
+    </ModalComponent>
+  </div>
+
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
     <div class="ms-auto">
       <Share/>
@@ -84,12 +93,13 @@
       <hr class="mt-4 mb-4"/>
 
       <p class="card-description">사업자등록증 이미지</p>
-      <div class="w-100 bg-body-secondary" style="height: 500px">
-        <img :src="readData.businessLicenseFile" class="img-contain" />
+      <div class="w-100 bg-body-secondary text-center py-3" style="height: 500px">
+<!--        <img :src="readData.businessLicenseFile" class="img-contain" />-->
+        <img src="/사업자등록증_샘플_개인.jpg" class="img-contain h-100" />
       </div>
 
       <div class="d-flex justify-content-end gap-2 mt-5">
-        <button class="w-auto btn-primary border-0 rounded-1 px-4 py-2">승인</button>
+        <button class="w-auto btn-primary border-0 rounded-1 px-4 py-2" @click="handleClickOk">승인</button>
         <button class="w-auto btn-light border-0 rounded-1 px-4 py-2">거절/보류</button>
       </div>
     </div>
@@ -103,14 +113,22 @@
 <script setup>
 import {onMounted, ref} from "vue";
   import {useRoute, useRouter} from "vue-router";
-  import {getUserOne} from "../../apis/userApi.js";
+import {getUserOne, putOkUserRequest} from "../../apis/userApi.js";
 import Share from "../../layout/Share.vue";
 import {read} from "@popperjs/core";
 import LoadingComponent from "../common/LoadingComponent.vue";
+import ModalComponent from "../common/ModalComponent.vue";
 
   const router = useRouter();
   const route = useRoute();
   const uid = route.params.userId;
+
+  const isModalOpen = ref(false);
+
+  const closeModal = () => {
+    isModalOpen.value = false;
+    router.replace('/user/request');
+  };
 
   // 조회 데이터 셋
   const readData = ref({
@@ -139,7 +157,13 @@ import LoadingComponent from "../common/LoadingComponent.vue";
     console.log(readData.value)
   }
 
-  // 승인 또는 거절 처리 필요
+  // 승인 또는 거절 처리
+  const handleClickOk = async () => {
+    await putOkUserRequest({ userId: uid }).then((res) => {
+      isModalOpen.value = true;
+      console.log(res)
+    })
+  }
 
 
   // 페이지가 마운트되면 호출
