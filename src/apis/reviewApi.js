@@ -14,7 +14,7 @@ export const getReviewList = async (page, size, type = '', keyword = '') => {
     if (keyword) {
         if (type) {
             params.keyword = keyword;
-            params.searchType = type;
+            params.type = type;
         }
     }
 
