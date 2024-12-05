@@ -5,7 +5,7 @@
         title="처리 완료"
         @close="closeModal"
     >
-      입점이 승인되었습니다.
+      {{ result }}처리 되었습니다.
     </ModalComponent>
   </div>
 
@@ -101,7 +101,7 @@
 
       <div class="d-flex justify-content-end gap-2 mt-5">
         <button class="w-auto btn-primary border-0 rounded-1 px-4 py-2" @click="handleClickOk">승인</button>
-        <button class="w-auto btn-light border-0 rounded-1 px-4 py-2">거절/보류</button>
+        <button v-if="readData.userStatus != '보류'" class="w-auto btn-light border-0 rounded-1 px-4 py-2" @click="handleClickHold">거절/보류</button>
       </div>
     </div>
     <!--  //card-body  -->
@@ -124,6 +124,7 @@ import ModalComponent from "../common/ModalComponent.vue";
   const uid = route.params.userId;
 
   const isModalOpen = ref(false);
+  const result = ref("");
 
   const closeModal = () => {
     isModalOpen.value = false;
@@ -147,6 +148,7 @@ import ModalComponent from "../common/ModalComponent.vue";
     contactNumber: '',
     accountNumber: '',
     createDate: '',
+    userStatus: '',
   })
 
   // 조회 데이터 호출 함수
@@ -157,11 +159,21 @@ import ModalComponent from "../common/ModalComponent.vue";
     console.log(readData.value)
   }
 
-  // 승인 또는 거절 처리
+  // 승인 처리
   const handleClickOk = async () => {
     await putUserStatus({ userId: uid, status: "입점" }).then((res) => {
       isModalOpen.value = true;
-      console.log(res)
+      result.value = "입점"
+      console.log(res);
+    })
+  }
+
+  // 보류 처리
+  const handleClickHold = async () => {
+    await putUserStatus({ userId: uid, status: "보류" }).then((res) => {
+      isModalOpen.value = true;
+      result.value = "보류"
+      console.log(res);
     })
   }
 

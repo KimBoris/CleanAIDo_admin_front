@@ -17,7 +17,7 @@
 
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title"></h4>
+            <h4 class="card-title">판매자 조회</h4>
             <p class="card-description"></p>
 
             <div class="form-group d-flex justify-content-end">
@@ -40,23 +40,24 @@
               <table class="table table-hover">
                 <thead>
                 <tr>
-                  <th style="width: 5%;">ID</th>
+                  <th style="width: 5%;">판매자 ID</th>
                   <th style="width: 10%;">스토어명</th>
                   <th style="width: 5%;">상태</th>
-                  <th style="width: 5%;">사업자명</th>
+                  <th style="width: 5%;">상호명</th>
                   <th style="width: 5%;">대표자명</th>
-                  <th style="width: 10%;">연락처</th>
                   <th style="width: 10%;">가입일</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="user in userList.dtoList" :key="user.userId" class="pe-auto">
-                  <td class="cursor-pointer">{{ user.userId }}</td>
+                  <td class="cursor-pointer text-primary" @click="goToReadPage(user.userId)">
+                    <i class="fa fa-user-o"></i>
+                    {{ user.userId }}
+                  </td>
                   <td>{{ user.storeName }}</td>
                   <td>{{ user.userStatus }}</td>
                   <td>{{ user.businessName }}</td>
                   <td>{{ user.ownerName }}</td>
-                  <td>{{ user.contactNumber }}</td>
                   <td>{{ user.createDate }}</td>
 
                 </tr>
@@ -136,6 +137,11 @@ const handleClickPage = (pageNum) => {
   router.push({query: {page: pageNum, type: searchData.value.type, keyword: searchData.value.keyword}});
   fetchUserList(pageNum, searchData.value.type, searchData.value.keyword);
 };
+
+// userId 클릭 시 read로 이동
+const goToReadPage = (userId) => {
+  router.push({path: `/user/read/${userId}`});
+}
 
 
 onMounted(() => {
@@ -220,5 +226,9 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
 }
 </style>
