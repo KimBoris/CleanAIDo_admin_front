@@ -7,6 +7,7 @@ import authRouters from "./auth.js";
 import { useAuthStore } from "../stores/useAuthStore";
 import userRouters from "./user.js";
 import customerRouters from "./customer.js";
+import categoryRouters from "./category.js";
 import reviewRouters from "./review.js";
 
 const MainPage = () => import("../pages/MainPage.vue");
@@ -21,6 +22,7 @@ const router = createRouter({
         orderRouters,
         productRouters,
         userRouters,
+        categoryRouters,
         customerRouters,
         reviewRouters,
     ],

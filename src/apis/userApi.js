@@ -173,3 +173,30 @@ export const getUserOne = async (userId) => {
 
     }
 }
+
+// 입점 요청 승인
+export const putOkUserRequest = async (userId) => {
+
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken
+
+    try {
+
+        const res = await axios.put(`${host}/okrequest`,
+            userId, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`
+                }
+            });
+
+        return res.data;
+
+    } catch (error) {
+
+        console.error("입점요청 승인 호출 실패", error.response?.data || error.message);
+        throw error;
+
+    }
+
+}
