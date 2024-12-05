@@ -22,7 +22,6 @@ export const getProductList = async (page, size, type='', keyword='') => {
             Authorization: `Bearer ${accessToken}`,
         },
     });
-    console.log(res)
     return res.data;
 };
 
@@ -58,13 +57,11 @@ export const postProduct = async (formData) =>{
 export const getProductById = async (pno) => {
     const authStore = useAuthStore();
     const accessToken = authStore.accessToken
-    console.log(`${host}/read/${pno}`)
     const res = await axios.get(`${host}/read/${pno}`,{
         headers: {
             Authorization: `Bearer ${accessToken}`,
         }
     })
-
 
     return res.data;
 };
@@ -73,11 +70,12 @@ export const updateProduct = async (formData, pno)=>{
     const authStore = useAuthStore();
     const accessToken = authStore.accessToken
     console.log("업데이트를 실행합니다")
-    console.log(pno)
+    console.log(formData.imageFiles)
     const res = await axios.put(`${host}/seller/${pno}`, formData,{
         headers: {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'multipart/form-data'
         }
     })
+    return res.data
 }

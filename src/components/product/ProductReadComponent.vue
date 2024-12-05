@@ -86,36 +86,39 @@
         <input type="datetime-local" id="releasedAt" class="form-control" v-model="editData.releasedAt">
       </div>
 
-<!--      &lt;!&ndash; 이미지 수정 및 업로드 &ndash;&gt;-->
-<!--      <div class="mb-4">-->
-<!--        <label class="input-group-text w-25" for="imageFiles">이미지 수정</label>-->
-<!--        <input type="file" id="imageFiles" class="form-control" multiple @change="handleImageUpload('imageFiles', $event)">-->
-<!--        <div v-if="files.value.imageFiles && files.value.imageFiles.length > 0" class="mt-2">-->
-<!--          <div v-for="(image, index) in files.value.imageFiles" :key="index" class="d-inline-block me-2">-->
-<!--            <img :src="image" alt="이미지 미리보기" width="100" height="100" class="border rounded">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!-- 기존 이미지 삭제 -->
+      <div class="mb-4">
+        <label class="input-group-text w-25" for="imageFiles">이미지 수정</label>
+        <input type="file" id="imageFiles" class="form-control" multiple @change="handleImageUpload('imageFiles', $event)">
+        <div v-if="oldFiles.imageFiles && oldFiles.imageFiles.length > 0" class="mt-2">
+          <div v-for="(image, index) in oldFiles.imageFiles" :key="index" class="d-inline-block me-2">
+            <img :src="'http://localhost:8080/api/v1/images/'+image" alt="이미지 미리보기" width="100" height="100" class="border rounded">
+            <button @click="clickDelete('imageFiles',image)">x</button>
+          </div>
+        </div>
+      </div>
 
-<!--      <div class="mb-4">-->
-<!--        <label class="input-group-text w-25" for="detailImageFiles">상세 이미지 수정</label>-->
-<!--        <input type="file" id="detailImageFiles" class="form-control" multiple @change="handleImageUpload('detailImageFiles', $event)">-->
-<!--        <div v-if="files.value.detailImageFiles && files.value.detailImageFiles.length > 0" class="mt-2">-->
-<!--          <div v-for="(image, index) in files.value.detailImageFiles" :key="index" class="d-inline-block me-2">-->
-<!--            <img :src="image" alt="상세 이미지 미리보기" width="100" height="100" class="border rounded">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <div class="mb-4">
+        <label class="input-group-text w-25" for="detailImageFiles">상세 이미지 수정</label>
+        <input type="file" id="detailImageFiles" class="form-control" multiple @change="handleImageUpload('detailImages', $event)">
+        <div v-if="oldFiles.detailImageFiles && oldFiles.detailImageFiles.length > 0" class="mt-2">
+          <div v-for="(image, index) in oldFiles.detailImageFiles" :key="index" class="d-inline-block me-2">
+            <img :src="'http://localhost:8080/api/v1/images/'+image" alt="상세 이미지 미리보기" width="100" height="100" class="border rounded">
+            <button @click="clickDelete('detailImageFiles',image)">x</button>
+          </div>
+        </div>
+      </div>
 
-<!--      <div class="mb-4">-->
-<!--        <label class="input-group-text w-25" for="usageImageFiles">사용 이미지 수정</label>-->
-<!--        <input type="file" id="usageImageFiles" class="form-control" multiple @change="handleImageUpload('usageImageFiles', $event)">-->
-<!--        <div v-if="files.value.usageImageFiles && files.value.usageImageFiles.length > 0" class="mt-2">-->
-<!--          <div v-for="(image, index) in files.value.usageImageFiles" :key="index" class="d-inline-block me-2">-->
-<!--            <img :src="image" alt="사용 이미지 미리보기" width="100" height="100" class="border rounded">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <div class="mb-4">
+        <label class="input-group-text w-25" for="usageImageFiles">사용 이미지 수정</label>
+        <input type="file" id="usageImageFiles" class="form-control" multiple @change="handleImageUpload('usageImages', $event)">
+        <div v-if="oldFiles.usageImageFiles && oldFiles.usageImageFiles.length > 0" class="mt-2">
+          <div v-for="(image, index) in oldFiles.usageImageFiles" :key="index" class="d-inline-block me-2">
+            <img :src="'http://localhost:8080/api/v1/images/'+image" alt="사용 이미지 미리보기" width="100" height="100" class="border rounded">
+            <button @click="clickDelete('usageImageFiles',image)">x</button>
+          </div>
+        </div>
+      </div>
 
       <!-- 수정 버튼 -->
       <button class="btn btn-primary w-100 mt-3" type="button" @click="handleClickUpdate">수정하기</button>
@@ -159,11 +162,17 @@ const categoryList = ref({
   dtoList: [],
 });
 
-const files = ref({
+const oldFiles = ref({
   imageFiles: [],
   detailImageFiles: [],
   usageImageFiles: []
 })
+
+const newFiles = ref({
+  imageFiles: [],
+  detailImages: [],
+  usageImages: []
+});
 
 // 상품 데이터 불러오기
 const fetchProductData = async () => {
@@ -186,14 +195,12 @@ const fetchProductData = async () => {
     };
 
     // files 초기화
-    files.value = {
+    oldFiles.value = {
       imageFiles: product.imageFiles || [],
       detailImageFiles: product.detailImageFiles || [],
       usageImageFiles: product.usageImageFiles || [],
     };
-
-    console.log(files.value.imageFiles);
-
+    console.log(typeof(oldFiles.value.imageFiles[0]))
     selectedCategory.value.category = product.category || null;
   } catch (error) {
     console.error("Failed to fetch product data:", error);
@@ -221,13 +228,9 @@ const handleRemoveCategory = () => {
   selectedCategory.value.category = null;
 };
 
-const handleImageUpload = (field, event) => {
-  const files = event.target.files;
-  const images = [];
-  for (let i = 0; i < files.length; i++) {
-    images.push(URL.createObjectURL(files[i]));
-  }
-  editData.value[field] = images; // 지정된 필드에 이미지 URL 업데이트
+const handleImageUpload = (type, event) => {
+  newFiles.value[type] = Array.from(event.target.files);
+  console.log(type+"is"+newFiles.value[type])
 };
 
 const handleClickUpdate = async () => {
@@ -243,30 +246,44 @@ const handleClickUpdate = async () => {
   formData.append('ptags', editData.value.ptags);
   formData.append("categoryId", selectedCategory.value.category.cno);
   // 이미지 처리
-  if (files.value.imageFiles.length > 0) {
-    files.value.imageFiles.forEach(file => formData.append('imageFiles', file));
+  if (oldFiles.value.imageFiles.length > 0) {
+    oldFiles.value.imageFiles.forEach(file => formData.append('oldImageFiles', file));
+  }
+  if (oldFiles.value.detailImageFiles.length > 0) {
+    oldFiles.value.detailImageFiles.forEach(file => formData.append('oldDetailFiles', file));
+  }
+  if (oldFiles.value.usageImageFiles.length > 0) {
+    oldFiles.value.usageImageFiles.forEach(file => formData.append('oldUsageFiles', file));
+  }
+  if (newFiles.value.imageFiles.length > 0) {
+    newFiles.value.imageFiles.forEach(file => formData.append('imageFiles', file));
   } else {
     formData.append('imageFiles', new Blob([]));
   }
-
-  if (files.value.detailImageFiles.length > 0) {
-    files.value.detailImageFiles.forEach(file => formData.append('detailImageFiles', file));
+  if (newFiles.value.detailImages.length > 0) {
+    newFiles.value.detailImages.forEach(file => formData.append('detailImageFiles', file));
   } else {
     formData.append('detailImageFiles', new Blob([]));
   }
-  if (files.value.usageImageFiles.length > 0) {
-    files.value.usageImageFiles.forEach(file => formData.append('usageImageFiles', file));
+  if (newFiles.value.usageImages.length > 0) {
+    newFiles.value.usageImages.forEach(file => formData.append('usageImageFiles', file));
   } else {
     formData.append('usageImageFiles', new Blob([]));
   }
 
   try {
-    await updateProduct(formData, pno);
+    const res = await updateProduct(formData, pno);
+    console.log(res)
     router.replace('/product/list');
   } catch (err) {
     error.value = err.response.data.message;
   }
 };
+
+const clickDelete = async (type, fileName) => {
+  oldFiles.value[type] = oldFiles.value[type].filter(file => file !== fileName);
+  console.log(oldFiles.value[type])
+}
 
 onMounted(() => {
   fetchProductData();
