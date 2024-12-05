@@ -11,9 +11,8 @@ export const getCustomerList = async (page, size, type = '', keyword = '') => {
         size: size || 10,
     };
 
-    if(keyword){
-        if(type)
-        {
+    if (keyword) {
+        if (type) {
             params.keyword = keyword;
             params.type = type;
         }
@@ -21,7 +20,7 @@ export const getCustomerList = async (page, size, type = '', keyword = '') => {
 
     try {
         const res = await axios.get(`${host}/list`, {
-            headers:{
+            headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
             params,
@@ -31,4 +30,17 @@ export const getCustomerList = async (page, size, type = '', keyword = '') => {
         console.error('Error fetching user list', error)
         throw error;
     }
+
+
+}
+export const getCustomerOne = async (customerId) => {
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken;
+    const res = await axios.get(`${host}/${customerId}`, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+    console.log(res.data)
+    return res.data;
 }

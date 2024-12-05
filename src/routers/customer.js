@@ -7,8 +7,7 @@ const customerRouter = {
     meta: {title: "사용자(customer)"},
     children: [
         {path: "", redirect: '/customer/list'},
-        {path: "list", component: CustomerListPage, meta: {back: "none"}},
-
+        {path: "list", component: CustomerListPage, meta: {back: "none"}}
     ],
 };
 export default customerRouter;
