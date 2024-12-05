@@ -53,7 +53,7 @@
                 <tr v-for="user in userList.dtoList" :key="user.userId" class="pe-auto">
                   <td class="cursor-pointer">{{ user.userId }}</td>
                   <td>{{ user.storeName }}</td>
-                  <td>{{ user.businessStatus }}</td>
+                  <td>{{ user.userStatus }}</td>
                   <td>{{ user.businessName }}</td>
                   <td>{{ user.ownerName }}</td>
                   <td>{{ user.contactNumber }}</td>

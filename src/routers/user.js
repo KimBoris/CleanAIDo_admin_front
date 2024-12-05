@@ -3,6 +3,7 @@ const UserRegister = () => import("../pages/user/UserRegisterPage.vue");
 const UserList = () => import("../pages/user/UserListPage.vue");
 const UserRequest = () => import("../pages/user/UserRequestListPage.vue");
 const UserRequestRead = () => import("../pages/user/UserRequestReadPage.vue");
+const UserRead = () => import("../pages/user/UserReadPage.vue");
 
 const userRouters = {
     path: "/user",
@@ -11,9 +12,10 @@ const userRouters = {
     children: [
         {path: "", redirect: '/user/list'},
         {path: "list", component: UserList, meta:{back: "none"} },
-        {path: "register", component: UserRegister },
-        {path: "request", component: UserRequest },
-        {path: "request/:userId", component: UserRequestRead },
+        {path: "register", component: UserRegister, meta: { back: "none" } },
+        {path: "read/:userId", component: UserRead },
+        {path: "request", component: UserRequest, meta: { back: "none" } },
+        {path: "request/:userId", component: UserRequestRead, meta: { read: "none" } },
     ],
 };
 
