@@ -41,6 +41,25 @@
         </div>
       </li>
 
+      <li class="nav-item nav-category">사용자 관리</li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#admin-order" aria-expanded="false" aria-controls="admin-order">
+          <i class="menu-icon mdi mdi-cart"></i>
+          <span class="menu-title">사용자 관리</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="admin-order">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item">
+              <RouterLink to="/user/list" class="nav-link">판매자 관리</RouterLink>
+            </li>
+            <li class="nav-item">
+              <RouterLink to="/customer/list" class="nav-link">고객 관리</RouterLink>
+            </li>
+          </ul>
+        </div>
+      </li>
+
       <!-- 상품 관리 -->
       <li class="nav-item nav-category">상품 관리</li>
       <li class="nav-item">

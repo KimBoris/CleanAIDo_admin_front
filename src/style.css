@@ -2,3 +2,8 @@
   margin: 0;
   padding: 0;
 }
+
+.card {
+  border: 0px;
+  --bs-card-border-color: var(--bs-light-border-subtle);
+}

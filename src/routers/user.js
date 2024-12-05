@@ -1,7 +1,8 @@
-import IndexPage from "../pages/user/IndexPage.vue";
-import UserRegisterPage from "../pages/user/UserRegisterPage.vue";
-import UserListPage from "../pages/user/UserListPage.vue";
-import UserRequestListPage from "../pages/user/UserRequestListPage.vue";
+const IndexPage = () => import("../pages/user/IndexPage.vue");
+const UserRegister = () => import("../pages/user/UserRegisterPage.vue");
+const UserList = () => import("../pages/user/UserListPage.vue");
+const UserRequest = () => import("../pages/user/UserRequestListPage.vue");
+const UserRequestRead = () => import("../pages/user/UserRequestReadPage.vue");
 
 const userRouters = {
     path: "/user",
@@ -9,9 +10,10 @@ const userRouters = {
     meta: { title: "판매자(Seller)" },
     children: [
         {path: "", redirect: '/user/list'},
-        {path: "list", component: UserListPage, meta:{back: "none"} },
-        {path: "register", component: UserRegisterPage },
-        {path: "request", component: UserRequestListPage },
+        {path: "list", component: UserList, meta:{back: "none"} },
+        {path: "register", component: UserRegister },
+        {path: "request", component: UserRequest },
+        {path: "request/:userId", component: UserRequestRead },
     ],
 };
 

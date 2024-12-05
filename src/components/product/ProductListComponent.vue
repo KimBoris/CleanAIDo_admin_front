@@ -123,8 +123,8 @@ const keyword = ref('');
 const isLoading = ref(true);
 
 const searchData = ref({
-  type: '',
-  keyword: ''
+  type: route.query.type||'',
+  keyword: route.query.keyword||'',
 });
 
 // 페이지 데이터 가져오기
@@ -151,10 +151,12 @@ onMounted(() => {
 const handleSearch = () => {
   searchData.value.type = selectedOption.value;
   searchData.value.keyword = keyword.value;
+  console.log("searchData.value.type = "+searchData.value.type)
   router.push({
     path: '/product/list',
     query: {page: 1, type: searchData.value.type, keyword: searchData.value.keyword}
   });
+  console.log("읏차")
   fetchProductList(1, searchData.value.type, searchData.value.keyword);
 };
 const goToEditPage = (pno) => {
@@ -181,12 +183,12 @@ button {
   margin: 0 !important;
 }
 
-.product-info {
+.review-info {
 
   margin-bottom: 20px;
 }
 
-.product-info p {
+.review-info p {
   font-size: 1rem;
   color: #555;
   margin-top: 25px;
@@ -194,7 +196,7 @@ button {
 }
 
 
-.product-info strong {
+.review-info strong {
   color: #222;
 }
 
@@ -207,14 +209,14 @@ button {
   margin-top: 8px;
 }
 
-.product-edit {
+.review-edit {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 20px;
 }
 
-.product-edit textarea {
+.review-edit textarea {
   flex-grow: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -222,7 +224,7 @@ button {
   resize: vertical;
 }
 
-.product-edit button {
+.review-edit button {
   background-color: #007bff;
   color: #fff;
   padding: 8px 16px;
