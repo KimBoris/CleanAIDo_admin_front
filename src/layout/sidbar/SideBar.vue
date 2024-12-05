@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <AdminSideBar v-if="role === 'ROLE_ADMIN'" />
     <SellerSideBar v-else-if="role === 'ROLE_SELLER'" />
   </nav>
