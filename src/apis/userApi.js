@@ -19,7 +19,7 @@ export const getUserList = async (page, size, type = '', keyword = '') => {
     if (keyword) {
         if (type) {
             params.keyword = keyword;
-            params.searchType = type;
+            params.type = type;
         }
     }
 
@@ -33,9 +33,7 @@ export const getUserList = async (page, size, type = '', keyword = '') => {
 
         console.log(res);
         return res.data;
-    }
-    catch (error)
-    {
+    } catch (error) {
         console.error("User 데이터를 못들고 왔어여", error);
         throw error;
     }

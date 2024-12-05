@@ -1,84 +1,101 @@
 <template>
-  <div>
 
-    <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
-      <div class="ms-auto">
-        <Share/>
-      </div>
+  <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
+    <div class="ms-auto">
+      <Share/>
     </div>
+  </div>
 
-    <div>
+  <div>
+    <div v-if="isLoading" class="flex items-center justify-center h-screen">
+      <LoadingComponent></LoadingComponent>
+    </div>
+    <div v-else>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title"></h4>
+          <p class="card-description"></p>
+          <div class="form-group d-flex justify-content-end">
 
-      <div v-if="isLoading" class="flex items-center justify-center h-screen">
-        <LoadingComponent></LoadingComponent>
-      </div>
+            <div class="input-group w-auto">
+              <select style="height: 36px;" v-model="selectedOption">
+                <option value="" disabled>------</option>
+                <option value="customerId">아이디</option>
+                <option value="customerName">고객명</option>
+              </select>
+              <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
+              <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button"
+                      style="height: 36px;">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
 
-      <div v-else>
-
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title"></h4>
-            <p class="card-description"></p>
-
-            <div class="form-group d-flex justify-content-end">
-
-              <div class="input-group w-auto">
-                <select style="height: 36px;" v-model="selectedOption">
-                  <option value="" disabled>------</option>
-                  <option value="customerId">아이디</option>
-                  <option value="customerName">이름</option>
-                </select>
-                <input type="text" v-model="keyword" placeholder="검색어를 입력하세요"/>
-                <button @click="handleSearch" class="btn btn-primary text-light px-2 py-1" type="button"
-                        style="height: 36px;">
-                  <i class="fa fa-search"></i>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th style="width: 10%;">고객 아이디</th>
+                <th style="width: 10%;">고객명</th>
+                <th style="width: 5%;">생년월일</th>
+                <th style="width: 5%;">생성일자</th>
+                <th style="width: 5%;">전화번호</th>
+                <th style="width: 10%;">주소</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="customer in customerList.dtoList" :key="customer.customerId" class="pe-auto">
+                <td class="cursor-pointer" @click="openModal(customer.customerId)">{{ customer.customerId }}</td>
+                <td>{{ customer.customerName }}</td>
+                <td>{{ customer.birthDate }}</td>
+                <td>{{ customer.createDate }}</td>
+                <td>{{ customer.phoneNumber }}</td>
+                <td>{{ customer.address }}</td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-center mt-5">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="customerList.prev"
+                        @click="handleClickPage(customerList.prevPage)">
+                  이전
+                </button>
+                <button type="button" class="btn btn-outline-secondary py-3 px-3"
+                        v-for="page in customerList.pageNumList"
+                        :key="page" @click="handleClickPage(page)">
+                  {{ page }}
+                </button>
+                <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="customerList.next"
+                        @click="handleClickPage(customerList.nextPage)">
+                  다음
                 </button>
               </div>
             </div>
-
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                <tr>
-                  <th style="width: 10%;">고객 아이디</th>
-                  <th style="width: 10%;">고객명</th>
-                  <th style="width: 5%;">생년월일</th>
-                  <th style="width: 5%;">생성일자</th>
-                  <th style="width: 5%;">전화번호</th>
-                  <th style="width: 10%;">주소</th>
-
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="customer in customerList.dtoList" :key="customer.customerId" class="pe-auto">
-                  <td class="cursor-pointer">{{ customer.customerId }}</td>
-                  <td>{{ customer.customerName }}</td>
-                  <td>{{ customer.birthDate }}</td>
-                  <td>{{ customer.createDate}}</td>
-                  <td>{{ customer.phoneNumber }}</td>
-                  <td>{{ customer.address }}</td>
-
-
-                </tr>
-                </tbody>
-              </table>
-              <div class="d-flex justify-content-center mt-5">
-                <div class="btn-group" role="group" aria-label="Basic example">
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="customerList.prev"
-                          @click="handleClickPage(customerList.prevPage)">
-                    이전
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-for="page in customerList.pageNumList"
-                          :key="page" @click="handleClickPage(page)">
-                    {{ page }}
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="customerList.next"
-                          @click="handleClickPage(customerList.nextPage)">
-                    다음
-                  </button>
-                </div>
-              </div>
-            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-if="isModalOpen" class="modal">
+    <ModalComponent></ModalComponent>
+    <div class="modal-content">
+      <button class="btn btn-close close-button" @click="closeModal"></button>
+      <div>
+        <div v-if="isLoading" class="flex items-center justify-center h-screen">
+          <LoadingComponent></LoadingComponent>
+        </div>
+        <div v-else>
+          <div class="customer-info">
+            <h4><strong>{{ selectedCustomer.value.customerName }}</strong></h4>
+          </div>
+          <div class="customer-info">
+            <hr>
+            <p><strong>유저이름</strong>
+              <div class="customer-name">{{ selectedCustomer.customerName }}</div>
+            </p>
+            <p><strong>유저 아이디</strong>
+              <div class="customer-id">{{ selectedCustomer.customerId }}</div>
+            </p>
           </div>
         </div>
       </div>
@@ -92,7 +109,8 @@ import {useAuthStore} from '../../stores/useAuthStore';
 import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
 import LoadingComponent from "../common/LoadingComponent.vue";
-import {getCustomerList} from "../../apis/customerAPI.js";
+import {getCustomerList, getCustomerOne} from "../../apis/customerAPI.js";
+import ModalComponent from "../common/ModalComponent.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -109,6 +127,11 @@ const customerList = ref({
   },
 });
 
+const isModalOpen = ref(false);
+const selectedCustomer = {
+  customerName:'',
+  customerId:''
+};
 const selectedOption = ref('');
 const keyword = ref('');
 const isLoading = ref(true);
@@ -129,7 +152,6 @@ const fetchCustomerList = async (page, type = '', keyword = '') => {
 
 
   customerList.value = data;
-  console.log("data = " + data)
   isLoading.value = false;
 };
 
@@ -137,6 +159,29 @@ const fetchCustomerList = async (page, type = '', keyword = '') => {
 const handleClickPage = (pageNum) => {
   router.push({query: {page: pageNum, type: searchData.value.type, keyword: searchData.value.keyword}});
   fetchCustomerList(pageNum, searchData.value.type, searchData.value.keyword);
+};
+
+const openModal = async (customerId) => {
+  try {
+    isLoading.value = true;
+    const customerData = await getCustomerOne(customerId);
+    if (customerData) {
+      selectedCustomer.value = customerData;
+    } else {
+      console.warn("No data received for customer ID:", customerId);
+    }
+    isModalOpen.value = true;
+  } catch (error) {
+    console.error('Failed to fetch Customer data:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedCustomer.value = null;
 };
 
 
