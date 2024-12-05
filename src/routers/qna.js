@@ -9,7 +9,7 @@ const qnaRouters = {
     meta: { title: "사이트문의"},
     children: [
         { path: "", redirect: '/qna/list' },
-        { path: "list", component: QNAListPage },
+        { path: "list", component: QNAListPage, meta: { back: "none" } },
         { path: ":qno", component: QNAReadPage },
     ],
 };
