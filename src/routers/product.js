@@ -1,4 +1,4 @@
-const IndexPage = () => import("../pages/faq/IndexPage.vue");
+const IndexPage = () => import("../pages/product/IndexPage.vue");
 const ProductListPage = () => import("../pages/product/ProductListPage.vue");
 const ProductRegisterPage = () => import("../pages/product/ProductRegisterPage.vue");
 const ProductReadPage = () => import("../pages/product/ProductReadPage.vue")

@@ -176,16 +176,16 @@ export const getUserOne = async (userId) => {
     }
 }
 
-// 입점 요청 승인
-export const putOkUserRequest = async (userId) => {
+// 판매자 상태 변경
+export const putUserStatus = async (request) => {
 
     const authStore = useAuthStore();
     const accessToken = authStore.accessToken
 
     try {
 
-        const res = await axios.put(`${host}/okrequest`,
-            userId, {
+        const res = await axios.put(`${host}/status`,
+            request, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`
