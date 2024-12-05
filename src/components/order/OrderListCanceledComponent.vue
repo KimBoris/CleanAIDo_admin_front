@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">취소/교환/환불 상태 주문 내역</h4>
+      <h4 class="card-title">취소/교환/환불 내역</h4>
 
       <!-- 상태 필터 버튼 -->
       <div class="mb-3">

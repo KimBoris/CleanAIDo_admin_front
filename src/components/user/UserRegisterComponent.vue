@@ -1,4 +1,14 @@
 <template>
+  <div v-if="isModalOpen">
+    <ModalComponent
+        title="등록 완료"
+        @close="closeModal"
+    >
+      {{ registData.userId }}님의 입점등록이 완료되었습니다. <br />
+      확인을 누르시면 로그인 페이지로 이동됩니다.
+    </ModalComponent>
+  </div>
+
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
     <div class="ms-auto">
       <Share/>
@@ -240,8 +250,16 @@
   import { useRouter } from "vue-router";
   import Share from "../../layout/Share.vue";
   import {postBusinessAuth, postCheckUserId, postOcrImage, postUserOneWithFile} from "../../apis/userApi.js";
+  import ModalComponent from "../common/ModalComponent.vue";
 
   const router = useRouter();
+
+  const isModalOpen = ref(false);
+
+  const closeModal = () => {
+    isModalOpen.value = false;
+    router.replace('/auth/login');
+  };
 
   // 등록 데이터 셋
   const registData = ref({
@@ -371,8 +389,10 @@
 
     console.log(formData);
     try {
-      const res = await postUserOneWithFile(formData).then(router.replace('/auth/login'));
-      console.log(res);
+      await postUserOneWithFile(formData).then((res) => {
+        isModalOpen.value = true;
+        console.log(res);
+      });
     } catch (error) {
       console.error('폼 데이터 제출 실패:', error);
     }

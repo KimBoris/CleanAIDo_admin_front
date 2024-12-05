@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">배송 상태 주문 내역</h4>
+      <h4 class="card-title">주문 내역</h4>
 
       <!-- 검색창 -->
       <div class="form-group d-flex justify-content-end">
