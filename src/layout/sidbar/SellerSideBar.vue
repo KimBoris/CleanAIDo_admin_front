@@ -2,7 +2,6 @@
   <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
       <!-- 상품 관리 -->
-      <li class="nav-item nav-category">상품 관리</li>
       <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#seller-product" aria-expanded="false" aria-controls="seller-product">
           <i class="menu-icon mdi mdi-package-variant"></i>
@@ -22,7 +21,6 @@
       </li>
 
       <!-- 주문 관리 -->
-      <li class="nav-item nav-category">주문 관리</li>
       <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#seller-order" aria-expanded="false" aria-controls="seller-order">
           <i class="menu-icon mdi mdi-cart"></i>
@@ -42,7 +40,6 @@
       </li>
 
       <!-- 게시판 -->
-      <li class="nav-item nav-category">게시판</li>
       <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#seller-board" aria-expanded="false" aria-controls="seller-board">
           <i class="menu-icon mdi mdi-help-circle"></i>
