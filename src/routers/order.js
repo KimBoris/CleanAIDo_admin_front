@@ -12,6 +12,7 @@ const orderRouters = {
         { path: "list/in-progress", component: OrderListInProgress, meta: { back: "none" } },
         { path: "list/canceled", component: OrderListCanceled, meta: { back: "none" } },
         { path: "detail/:orderNum", component: OrderDetailList },
+        { path: ":customerId", component:OrderListInProgress, meta: { back: "none" } },
     ],
 };
 
