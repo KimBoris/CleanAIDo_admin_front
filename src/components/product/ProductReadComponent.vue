@@ -92,7 +92,7 @@
         <input type="file" id="imageFiles" class="form-control" multiple @change="handleImageUpload('imageFiles', $event)">
         <div v-if="oldFiles.imageFiles && oldFiles.imageFiles.length > 0" class="mt-2">
           <div v-for="(image, index) in oldFiles.imageFiles" :key="index" class="d-inline-block me-2">
-            <img :src="'http://localhost:8080/api/v1/images/'+image" alt="이미지 미리보기" width="100" height="100" class="border rounded">
+            <img :src="'https://bucket-cleanaido.s3.ap-northeast-2.amazonaws.com/'+image" alt="이미지 미리보기" width="100" height="100" class="border rounded">
             <button @click="clickDelete('imageFiles',image)">x</button>
           </div>
         </div>
@@ -103,7 +103,7 @@
         <input type="file" id="detailImageFiles" class="form-control" multiple @change="handleImageUpload('detailImages', $event)">
         <div v-if="oldFiles.detailImageFiles && oldFiles.detailImageFiles.length > 0" class="mt-2">
           <div v-for="(image, index) in oldFiles.detailImageFiles" :key="index" class="d-inline-block me-2">
-            <img :src="'http://localhost:8080/api/v1/images/'+image" alt="상세 이미지 미리보기" width="100" height="100" class="border rounded">
+            <img :src="'https://bucket-cleanaido.s3.ap-northeast-2.amazonaws.com/'+image" alt="상세 이미지 미리보기" width="100" height="100" class="border rounded">
             <button @click="clickDelete('detailImageFiles',image)">x</button>
           </div>
         </div>
@@ -114,7 +114,7 @@
         <input type="file" id="usageImageFiles" class="form-control" multiple @change="handleImageUpload('usageImages', $event)">
         <div v-if="oldFiles.usageImageFiles && oldFiles.usageImageFiles.length > 0" class="mt-2">
           <div v-for="(image, index) in oldFiles.usageImageFiles" :key="index" class="d-inline-block me-2">
-            <img :src="'http://localhost:8080/api/v1/images/'+image" alt="사용 이미지 미리보기" width="100" height="100" class="border rounded">
+            <img :src="'https://bucket-cleanaido.s3.ap-northeast-2.amazonaws.com/'+image" alt="사용 이미지 미리보기" width="100" height="100" class="border rounded">
             <button @click="clickDelete('usageImageFiles',image)">x</button>
           </div>
         </div>
