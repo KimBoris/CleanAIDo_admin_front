@@ -3,23 +3,16 @@
        style="display: block; background: rgba(0, 0, 0, 0.5); transition: all 0.3s ease;">
     <div class="modal-dialog mt-5" role="document">
       <div class="modal-content shadow-lg rounded-4" style="background: #ffffff; border-radius: 15px;">
-        <!-- Close Button -->
         <div class="modal-header border-0">
           <h5 class="modal-title" style="font-size: 1.5rem; font-weight: 600;">고객 정보</h5>
           <button type="button" class="btn-close" @click="closeModal" style="color: #ff4c4c; border: none;"></button>
         </div>
-
-        <!-- Modal Body -->
         <div class="modal-body">
-          <!-- 로딩 중 상태 -->
           <div v-if="isLoading" class="d-flex justify-content-center align-items-center" style="height: 200px;">
             <LoadingComponent />
           </div>
-
-          <!-- 로딩 완료 후 데이터 표시 -->
           <div v-else>
             <div class="d-flex align-items-start">
-              <!-- Profile Image Section (좌측 상단에 위치) -->
               <div class="me-4">
 <!--                    src='/public/assets/images/logo-mini.svg'-->
                 <img
@@ -29,8 +22,6 @@
                     style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 4px solid #f1f1f1; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"
                 />
               </div>
-
-              <!-- Customer Information -->
               <div class="ms-3">
                 <div class="mb-3">
                   <h6 class="text-muted" style="font-size: 1.1rem;">유저 이름</h6>
@@ -53,8 +44,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- 거래 내역, QNA, 리뷰, 게시글을 일정 간격으로 가로 정렬 -->
             <div class="d-flex justify-content-between mt-4">
               <div class="text-center flex-fill">
                 <h6 class="text-muted" style="font-size: 1.1rem;">거래 내역</h6>
@@ -75,8 +64,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Modal Footer -->
         <div class="modal-footer border-0">
           <button type="button" class="btn btn-secondary" @click="closeModal" style="padding: 8px 20px; font-size: 1rem;">닫기</button>
         </div>
@@ -146,7 +133,7 @@
                  :style="{ top: `${contextMenuPosition.y}px`, left: `${contextMenuPosition.x}px` }"
                  class="context-menu" @click="handleContextMenuClick">
               <ul>
-                <li @click="showTransactionHistory">거래 내역</li>
+                <li @click="showTransactionHistory()">거래 내역</li>
                 <li>QNA</li>
                 <li>리뷰</li>
                 <li>게시글</li>
@@ -174,7 +161,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -198,6 +184,7 @@ const isContextMenuVisible = ref(false);
 const contextMenuPosition = ref({x: 0, y: 0});
 
 const showContextMenu = (event) => {
+  console.log("event"+event);
   contextMenuPosition.value = {x: event.clientX +window.scrollX - 280, y: event.clientY +window.scrollY - 280};
   isContextMenuVisible.value = true;
 };
@@ -207,9 +194,15 @@ const handleContextMenuClick = () => {
 };
 
 const showTransactionHistory = () => {
-  console.log(`거래 내역 조회: ${selectedCustomer.value.customerId}`);
-  isContextMenuVisible.value = false;
+  router.push({
+    path: '/order/list',
+    query: {page: 1, type: "customerId", keyword: 'customer9'}
+
+  });
+
+  isContextMenuVisible.value = false; // 컨텍스트 메뉴 닫기
 };
+
 
 
 const customerList = ref({
@@ -223,13 +216,13 @@ const customerList = ref({
 
 const isModalOpen = ref(false);
 const selectedCustomer = {
-  customerName: '',
-  customerId: '',
-  birthDate: '',
-  phoneNumber: '',
-  address: '',
-  profileImageUrl: '',
-  orderCount: '',
+  // customerName: '',
+  // customerId: '',
+  // birthDate: '',
+  // phoneNumber: '',
+  // address: '',
+  // profileImageUrl: '',
+  // orderCount: '',
 };
 const selectedOption = ref('');
 const keyword = ref('');
@@ -266,29 +259,30 @@ const handleClickPage = (pageNum) => {
   fetchCustomerList(pageNum, searchData.value.type, searchData.value.keyword);
 };
 
+const isLoadingModal = ref(false);
 const openModal = async (customerId) => {
+  isLoadingModal.value = true;
   try {
-    isLoading.value = true; // 로딩 시작
     const customerData = await getCustomerOne(customerId);
-
-    if (customerData != null) {
+    if (customerData) {
       selectedCustomer.value = customerData;
+      isModalOpen.value = true;
     } else {
       console.warn("No data received for customer ID:", customerId);
     }
   } catch (error) {
     console.error('Failed to fetch Customer data:', error);
   } finally {
-    isLoading.value = false; // 로딩 종료
-    isModalOpen.value = true;
+    isLoadingModal.value = false;
   }
 };
 
-
 const closeModal = () => {
   isModalOpen.value = false;
-  selectedCustomer.value = null;
+  selectedCustomer.value = {};
 };
+
+
 
 
 onMounted(async () => {

@@ -100,13 +100,13 @@ const fetchOrders = async (page) => {
 
 // 검색 버튼 클릭 시
 const handleSearch = () => {
-  router.push({path: route.path, query: {page: 1, searchType: searchType.value, keyword: keyword.value}});
+  router.push({path: route.path, query: {page: 1, type: searchType.value, keyword: keyword.value}});
   fetchOrders(1);
 };
 
 // 페이지네이션 버튼 클릭 시
 const handleClickPage = (pageNum) => {
-  router.push({path: route.path, query: {page: pageNum, searchType: searchType.value, keyword: keyword.value}});
+  router.push({path: route.path, query: {page: pageNum, type: searchType.value, keyword: keyword.value}});
   fetchOrders(pageNum);
 };
 
@@ -117,7 +117,7 @@ onMounted(() => {
 
 // 라우트 변경 시 목록 다시 불러오기
 onBeforeRouteUpdate((to, from, next) => {
-  searchType.value = to.query.searchType || '';
+  searchType.value = to.query.type || '';
   keyword.value = to.query.keyword || '';
   currentPage.value = parseInt(to.query.page) || 1;
   fetchOrders(currentPage.value);

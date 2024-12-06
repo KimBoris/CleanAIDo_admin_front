@@ -10,6 +10,7 @@ const orderRouters = {
         { path: "", redirect: "/order/list/in-progress" },
         { path: "list/in-progress", component: OrderListInProgress, meta: { back: "none" } },
         { path: "list/canceled", component: OrderListCanceled, meta: { back: "none" } },
+        { path: ":customerId", component:OrderListInProgress, meta: { back: "none" } },
     ],
 };
 
