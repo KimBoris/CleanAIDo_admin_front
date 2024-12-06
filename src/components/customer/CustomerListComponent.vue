@@ -1,4 +1,90 @@
 <template>
+  <div v-if="isModalOpen" class="modal fade show" tabindex="-1" role="dialog"
+       style="display: block; background: rgba(0, 0, 0, 0.5); transition: all 0.3s ease;">
+    <div class="modal-dialog mt-5" role="document">
+      <div class="modal-content shadow-lg rounded-4" style="background: #ffffff; border-radius: 15px;">
+        <!-- Close Button -->
+        <div class="modal-header border-0">
+          <h5 class="modal-title" style="font-size: 1.5rem; font-weight: 600;">고객 정보</h5>
+          <button type="button" class="btn-close" @click="closeModal" style="color: #ff4c4c; border: none;"></button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <!-- 로딩 중 상태 -->
+          <div v-if="isLoading" class="d-flex justify-content-center align-items-center" style="height: 200px;">
+            <LoadingComponent />
+          </div>
+
+          <!-- 로딩 완료 후 데이터 표시 -->
+          <div v-else>
+            <div class="d-flex align-items-start">
+              <!-- Profile Image Section (좌측 상단에 위치) -->
+              <div class="me-4">
+<!--                    src='/public/assets/images/logo-mini.svg'-->
+                <img
+                    :src="selectedCustomer.value.profileImageUrl"
+                    alt="프로필 사진"
+                    class="img-thumbnail"
+                    style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 4px solid #f1f1f1; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"
+                />
+              </div>
+
+              <!-- Customer Information -->
+              <div class="ms-3">
+                <div class="mb-3">
+                  <h6 class="text-muted" style="font-size: 1.1rem;">유저 이름</h6>
+                  <p class="fw-bold" style="font-size: 1.2rem;">{{ selectedCustomer.value.customerName }}</p>
+                </div>
+
+                <div class="mb-3">
+                  <h6 class="text-muted" style="font-size: 1.1rem;">유저 아이디</h6>
+                  <p class="fw-bold" style="font-size: 1.2rem;">{{ selectedCustomer.value.customerId }}</p>
+                </div>
+
+                <div class="mb-3">
+                  <h6 class="text-muted" style="font-size: 1.1rem;">전화 번호</h6>
+                  <p class="fw-bold" style="font-size: 1.2rem;">{{ selectedCustomer.value.phoneNumber }}</p>
+                </div>
+
+                <div class="mb-3">
+                  <h6 class="text-muted" style="font-size: 1.1rem;">생년월일</h6>
+                  <p class="fw-bold" style="font-size: 1.2rem;">{{ selectedCustomer.value.birthDate }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 거래 내역, QNA, 리뷰, 게시글을 일정 간격으로 가로 정렬 -->
+            <div class="d-flex justify-content-between mt-4">
+              <div class="text-center flex-fill">
+                <h6 class="text-muted" style="font-size: 1.1rem;">거래 내역</h6>
+                <p class="fw-bold" style="font-size: 1.2rem;">{{ selectedCustomer.value.orderCount }}</p>
+              </div>
+              <div class="text-center flex-fill">
+                <h6 class="text-muted" style="font-size: 1.1rem;">QNA</h6>
+                <p class="fw-bold" style="font-size: 1.2rem;">{{ selectedCustomer.value.qnaCount }}</p>
+              </div>
+              <div class="text-center flex-fill">
+                <h6 class="text-muted" style="font-size: 1.1rem;">리뷰</h6>
+                <p class="fw-bold" style="font-size: 1.2rem;">{{ selectedCustomer.value.reviewCount }}</p>
+              </div>
+              <div class="text-center flex-fill">
+                <h6 class="text-muted" style="font-size: 1.1rem;">게시글</h6>
+                <p class="fw-bold" style="font-size: 1.2rem;">{{ selectedCustomer.value.postCount }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" @click="closeModal" style="padding: 8px 20px; font-size: 1rem;">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
     <div class="ms-auto">
@@ -11,6 +97,8 @@
       <LoadingComponent></LoadingComponent>
     </div>
     <div v-else>
+
+
       <div class="card">
         <div class="card-body">
           <h4 class="card-title"></h4>
@@ -31,7 +119,7 @@
             </div>
           </div>
 
-          <div class="table-responsive">
+          <div class="table-responsive" @contextmenu.prevent="showContextMenu($event)">
             <table class="table table-hover">
               <thead>
               <tr>
@@ -54,6 +142,18 @@
               </tr>
               </tbody>
             </table>
+            <div v-if="isContextMenuVisible"
+                 :style="{ top: `${contextMenuPosition.y}px`, left: `${contextMenuPosition.x}px` }"
+                 class="context-menu" @click="handleContextMenuClick">
+              <ul>
+                <li @click="showTransactionHistory">거래 내역</li>
+                <li>QNA</li>
+                <li>리뷰</li>
+                <li>게시글</li>
+              </ul>
+            </div>
+
+
             <div class="d-flex justify-content-center mt-5">
               <div class="btn-group" role="group" aria-label="Basic example">
                 <button type="button" class="btn btn-outline-secondary py-3 px-3" v-if="customerList.prev"
@@ -74,33 +174,10 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
-  <div v-if="isModalOpen" class="modal">
-    <ModalComponent></ModalComponent>
-    <div class="modal-content">
-      <button class="btn btn-close close-button" @click="closeModal"></button>
-      <div>
-        <div v-if="isLoading" class="flex items-center justify-center h-screen">
-          <LoadingComponent></LoadingComponent>
-        </div>
-        <div v-else>
-          <div class="customer-info">
-            <h4><strong>{{ selectedCustomer.value.customerName }}</strong></h4>
-          </div>
-          <div class="customer-info">
-            <hr>
-            <p><strong>유저이름</strong>
-              <div class="customer-name">{{ selectedCustomer.customerName }}</div>
-            </p>
-            <p><strong>유저 아이디</strong>
-              <div class="customer-id">{{ selectedCustomer.customerId }}</div>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
 </template>
 
 <script setup>
@@ -110,13 +187,30 @@ import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
 import LoadingComponent from "../common/LoadingComponent.vue";
 import {getCustomerList, getCustomerOne} from "../../apis/customerAPI.js";
-import ModalComponent from "../common/ModalComponent.vue";
 
 const route = useRoute();
 const router = useRouter();
 
 const authStore = useAuthStore();
 const role = computed(() => authStore.role);
+
+const isContextMenuVisible = ref(false);
+const contextMenuPosition = ref({x: 0, y: 0});
+
+const showContextMenu = (event) => {
+  contextMenuPosition.value = {x: event.clientX +window.scrollX - 280, y: event.clientY +window.scrollY - 280};
+  isContextMenuVisible.value = true;
+};
+
+const handleContextMenuClick = () => {
+  isContextMenuVisible.value = false;
+};
+
+const showTransactionHistory = () => {
+  console.log(`거래 내역 조회: ${selectedCustomer.value.customerId}`);
+  isContextMenuVisible.value = false;
+};
+
 
 const customerList = ref({
   dtoList: [],
@@ -129,8 +223,13 @@ const customerList = ref({
 
 const isModalOpen = ref(false);
 const selectedCustomer = {
-  customerName:'',
-  customerId:''
+  customerName: '',
+  customerId: '',
+  birthDate: '',
+  phoneNumber: '',
+  address: '',
+  profileImageUrl: '',
+  orderCount: '',
 };
 const selectedOption = ref('');
 const keyword = ref('');
@@ -142,17 +241,23 @@ const searchData = ref({
 });
 
 const fetchCustomerList = async (page, type = '', keyword = '') => {
-  isLoading.value = true;
-  const data = await getCustomerList(page || 1, 10, type, keyword);
+  try {
+    isLoading.value = true;
+    const data = await getCustomerList(page || 1, 10, type, keyword);
 
-  data.dtoList.forEach(customer => {
-    if (customer.createDate) customer.createDate = new Date(customer.createDate).toLocaleString();
-    if (customer.updateDate) customer.updateDate = new Date(customer.updateDate).toLocaleString();
-  });
+    if (data && data.dtoList) {
+      data.dtoList.forEach(customer => {
+        if (customer.createDate) customer.createDate = new Date(customer.createDate).toLocaleString();
+        if (customer.updateDate) customer.updateDate = new Date(customer.updateDate).toLocaleString();
+      });
 
-
-  customerList.value = data;
-  isLoading.value = false;
+      customerList.value = data;
+    }
+  } catch (error) {
+    console.error('Failed to fetch customer list:', error);
+  } finally {
+    isLoading.value = false; // 로딩 종료
+  }
 };
 
 
@@ -163,18 +268,19 @@ const handleClickPage = (pageNum) => {
 
 const openModal = async (customerId) => {
   try {
-    isLoading.value = true;
+    isLoading.value = true; // 로딩 시작
     const customerData = await getCustomerOne(customerId);
-    if (customerData) {
+
+    if (customerData != null) {
       selectedCustomer.value = customerData;
     } else {
       console.warn("No data received for customer ID:", customerId);
     }
-    isModalOpen.value = true;
   } catch (error) {
     console.error('Failed to fetch Customer data:', error);
   } finally {
-    isLoading.value = false;
+    isLoading.value = false; // 로딩 종료
+    isModalOpen.value = true;
   }
 };
 
@@ -185,12 +291,17 @@ const closeModal = () => {
 };
 
 
-onMounted(() => {
-  searchData.value.type = route.query.type || '';
-  searchData.value.keyword = route.query.keyword || '';
-  fetchCustomerList(route.query.page || 1, searchData.value.type, searchData.value.keyword);
+onMounted(async () => {
+  try {
+    searchData.value.type = route.query.type || '';
+    searchData.value.keyword = route.query.keyword || '';
+    await fetchCustomerList(route.query.page || 1, searchData.value.type, searchData.value.keyword);
+  } catch (error) {
+    console.error('Error during initial fetch:', error);
+  } finally {
+    isLoading.value = false; // 로딩 종료
+  }
 });
-
 const handleSearch = () => {
   searchData.value.type = selectedOption.value;
   searchData.value.keyword = keyword.value;
@@ -200,6 +311,7 @@ const handleSearch = () => {
   });
   fetchCustomerList(1, searchData.value.type, searchData.value.keyword);
 };
+
 </script>
 
 <style scoped>
@@ -221,22 +333,22 @@ button {
   margin: 0 !important;
 }
 
-.review-info {
+.customer-info {
   margin-bottom: 20px;
 }
 
-.review-info p {
+.customer-info p {
   font-size: 1rem;
   color: #555;
   margin-top: 25px;
   margin-bottom: 20px;
 }
 
-.review-info strong {
+.customer-info strong {
   color: #222;
 }
 
-.product-contents {
+.customer-contents {
   background-color: #f1f1f1;
   padding: 10px;
   border-radius: 4px;
@@ -245,14 +357,14 @@ button {
   margin-top: 8px;
 }
 
-.review-edit {
+.customer-edit {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 20px;
 }
 
-.review-edit textarea {
+.customer-edit textarea {
   flex-grow: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -260,12 +372,35 @@ button {
   resize: vertical;
 }
 
-.review-edit button {
+.customer-edit button {
   background-color: #007bff;
   color: #fff;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.context-menu {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.context-menu ul {
+  list-style: none;
+  padding: 5px 0;
+  margin: 0;
+}
+
+.context-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.context-menu li:hover {
+  background-color: #f0f0f0;
 }
 </style>
