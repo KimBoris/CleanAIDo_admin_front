@@ -115,7 +115,6 @@ export const postCheckUserId = async (userId) => {
 
     } catch (error) {
 
-        console.log(userId);
         console.error("ID 중복체크 실패", error.response?.data || error.message);
         throw error;
 

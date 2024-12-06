@@ -40,3 +40,56 @@ export const getCanceledOrders = (page = 1, size = 10, status = '', searchType =
         }
     });
 };
+
+// 주문상세 리스트 조회
+export const getOrderDetailList = async (page, size, orderNum) => {
+
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken;
+
+    const params= {
+        page: page || 1,
+        size: size || 10,
+    };
+    
+    try {
+
+        const res = await axios.get(`${host}/detail/${orderNum}`,
+            {
+                params,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            })
+
+        return res.data;
+        
+    } catch (error) {
+        console.error("주문 상세 호출 실패", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// 배송처리
+export const putOrserDelivery = async (request) => {
+
+    const authStore = useAuthStore();
+    const accessToken = authStore.accessToken;
+
+    try {
+
+        const res = await axios.put(`${host}/delivery`,
+            request, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+        });
+
+        return res.data;
+
+    } catch (error) {
+        console.error("주문 상세 호출 실패", error.response?.data || error.message);
+        throw error;
+    }
+
+};
