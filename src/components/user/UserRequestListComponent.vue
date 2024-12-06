@@ -7,7 +7,7 @@
   </div>
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">판매자 입점 요청 리스트</h4>
+      <h4 class="card-title">판매자 입점요청</h4>
 
       <!-- 로딩 -->
       <div v-if="isLoading" class="flex items-center justify-center h-screen">
@@ -20,16 +20,17 @@
           <table class="table table-hover">
             <thead>
             <tr>
-              <th style="width: 25%;">판매자 ID</th>
-              <th style="width: 25%;">스토어명</th>
-              <th style="width: 10%;">사업자유형</th>
-              <th style="width: 15%;">대표자명</th>
-              <th style="width: 25%;">상호명</th>
+              <th style="width: 5%;">판매자 ID</th>
+              <th style="width: 10%;">스토어명</th>
+              <th style="width: 5%;">사업자유형</th>
+              <th style="width: 5%;">대표자명</th>
+              <th style="width: 5%;">상호명</th>
+              <th style="width: 10%;">가입일</th>
             </tr>
             </thead>
             <tbody>
               <tr v-for="userRequest in userRequestList.dtoList" :key="userRequest.userId" class="pe-auto">
-                <td class="cursor-pointer" @click="goToReadPage(userRequest.userId)">
+                <td class="cursor-pointer text-primary" @click="goToReadPage(userRequest.userId)">
                   <i class="fa fa-user-o"></i>
                   {{ userRequest.userId }}</td>
                 <td>{{ userRequest.storeName }}</td>
@@ -37,6 +38,7 @@
                 <td v-else>법인</td>
                 <td>{{ userRequest.ownerName }}</td>
                 <td>{{ userRequest.businessName }}</td>
+                <td>{{ userRequest.createDate }}</td>
               </tr>
             </tbody>
           </table>
@@ -147,5 +149,9 @@ td {
 
 button {
   margin: 0 !important;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
 }
 </style>
