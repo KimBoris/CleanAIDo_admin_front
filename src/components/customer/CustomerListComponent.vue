@@ -13,7 +13,7 @@
         <div class="modal-body">
           <!-- 로딩 중 상태 -->
           <div v-if="isLoading" class="d-flex justify-content-center align-items-center" style="height: 200px;">
-            <LoadingComponent />
+            <LoadingComponent/>
           </div>
 
           <!-- 로딩 완료 후 데이터 표시 -->
@@ -21,7 +21,7 @@
             <div class="d-flex align-items-start">
               <!-- Profile Image Section (좌측 상단에 위치) -->
               <div class="me-4">
-<!--                    src='/public/assets/images/logo-mini.svg'-->
+                <!--                    src='/public/assets/images/logo-mini.svg'-->
                 <img
                     :src="selectedCustomer.value.profileImageUrl"
                     alt="프로필 사진"
@@ -78,12 +78,13 @@
 
         <!-- Modal Footer -->
         <div class="modal-footer border-0">
-          <button type="button" class="btn btn-secondary" @click="closeModal" style="padding: 8px 20px; font-size: 1rem;">닫기</button>
+          <button type="button" class="btn btn-secondary" @click="closeModal"
+                  style="padding: 8px 20px; font-size: 1rem;">닫기
+          </button>
         </div>
       </div>
     </div>
   </div>
-
 
 
   <div class="d-sm-flex align-items-center justify-content-between border-bottom mb-4">
@@ -119,7 +120,7 @@
             </div>
           </div>
 
-          <div class="table-responsive" @contextmenu.prevent="showContextMenu($event)">
+          <div class="table-responsive">
             <table class="table table-hover">
               <thead>
               <tr>
@@ -132,8 +133,11 @@
               </tr>
               </thead>
               <tbody>
-              <tr v-for="customer in customerList.dtoList" :key="customer.customerId" class="pe-auto">
-                <td class="cursor-pointer" @click="openModal(customer.customerId)">{{ customer.customerId }}</td>
+              <tr v-for="customer in customerList.dtoList"
+                  :key="customer.customerId"
+                  class="pe-auto"
+                  @contextmenu.prevent="showContextMenu($event, customer.customerId)">
+                <td>{{ customer.customerId }}</td>
                 <td>{{ customer.customerName }}</td>
                 <td>{{ customer.birthDate }}</td>
                 <td>{{ customer.createDate }}</td>
@@ -144,7 +148,7 @@
             </table>
             <div v-if="isContextMenuVisible"
                  :style="{ top: `${contextMenuPosition.y}px`, left: `${contextMenuPosition.x}px` }"
-                 class="context-menu" @click="handleContextMenuClick">
+                 class="context-menu">
               <ul>
                 <li @click="showTransactionHistory">거래 내역</li>
                 <li>QNA</li>
@@ -187,6 +191,7 @@ import {useRoute, useRouter} from 'vue-router';
 import Share from "../../layout/Share.vue";
 import LoadingComponent from "../common/LoadingComponent.vue";
 import {getCustomerList, getCustomerOne} from "../../apis/customerAPI.js";
+import customer from "../../routers/customer.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -197,20 +202,34 @@ const role = computed(() => authStore.role);
 const isContextMenuVisible = ref(false);
 const contextMenuPosition = ref({x: 0, y: 0});
 
-const showContextMenu = (event) => {
-  contextMenuPosition.value = {x: event.clientX +window.scrollX - 280, y: event.clientY +window.scrollY - 280};
+const  hoveredCustomerId = null;
+
+const showContextMenu = (event, customerId) => {
+  contextMenuPosition.value = {
+    x: event.clientX + window.scrollX,
+    y: event.clientY + window.scrollY
+  };
+  selectedCustomer.value.customerId = customerId; // 선택된 고객 ID 저장
+  console.log('CustomerId:', selectedCustomer.value.customerId); // 디버깅용 로그
   isContextMenuVisible.value = true;
 };
 
-const handleContextMenuClick = () => {
-  isContextMenuVisible.value = false;
+const handleContextMenuClick = (event) => {
+  const customerId = event.target.getAttribute('data-customerId');
+  if (customerId) {
+    console.log('선택한 customerId:', customerId);
+    // 고객 ID에 따라 처리할 로직 추가
+  }
+  this.isContextMenuVisible = false;  // context menu 닫기
 };
-
 const showTransactionHistory = () => {
-  console.log(`거래 내역 조회: ${selectedCustomer.value.customerId}`);
-  isContextMenuVisible.value = false;
+  if (selectedCustomer.value.customerId) {
+    router.push(`/order/${selectedCustomer.value.customerId}`); // 해당 경로로 이동
+    isContextMenuVisible.value = false; // context menu 닫기
+  } else {
+    console.error('No customer ID selected');
+  }
 };
-
 
 const customerList = ref({
   dtoList: [],
@@ -222,7 +241,7 @@ const customerList = ref({
 });
 
 const isModalOpen = ref(false);
-const selectedCustomer = {
+const selectedCustomer = ref({
   customerName: '',
   customerId: '',
   birthDate: '',
@@ -230,7 +249,7 @@ const selectedCustomer = {
   address: '',
   profileImageUrl: '',
   orderCount: '',
-};
+});
 const selectedOption = ref('');
 const keyword = ref('');
 const isLoading = ref(true);
@@ -311,7 +330,6 @@ const handleSearch = () => {
   });
   fetchCustomerList(1, searchData.value.type, searchData.value.keyword);
 };
-
 </script>
 
 <style scoped>

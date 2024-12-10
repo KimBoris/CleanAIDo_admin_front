@@ -115,13 +115,13 @@ const fetchOrders = async (page, status = '') => {
 
 // 검색 버튼 클릭 시
 const handleSearch = () => {
-  router.push({ path: route.path, query: { page: 1, searchType: searchType.value, keyword: keyword.value, status: statusFilter.value } });
+  router.push({ path: route.path, query: { page: 1, type: searchType.value, keyword: keyword.value, status: statusFilter.value } });
   fetchOrders(1, statusFilter.value);
 };
 
 // 페이지네이션 버튼 클릭 시
 const handleClickPage = (pageNum) => {
-  router.push({ path: route.path, query: { page: pageNum, searchType: searchType.value, keyword: keyword.value, status: statusFilter.value } });
+  router.push({ path: route.path, query: { page: pageNum, type: searchType.value, keyword: keyword.value, status: statusFilter.value } });
   fetchOrders(pageNum, statusFilter.value);
 };
 

@@ -131,7 +131,7 @@ const fetchUserList = async (page, type = '', keyword = '') => {
   userList.value = data;
   isLoading.value = false;
 
-  console.log(user.value.data)
+  console.log(userList.value)
 };
 
 
